@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.AssayPreparationPage"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <Grid>
+            <!--<ScrollView>-->
+            <Grid Padding="8" BackgroundColor="White" RowDefinitions="auto, *">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8" 
+                           Grid.Row="0" Grid.ColumnSpan="2"/>
+
+                <Grid Grid.Row="1" Grid.ColumnSpan="2"
+                      ColumnDefinitions="100, *, 100" RowDefinitions="50, *, auto" >
+                    <ImageButton Grid.Column="0" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousActivityCommand}"/>
+                    <Label Grid.Column="1" Text="{Binding SelectedActivity.activity_name, StringFormat='Repetition {0}'}"
+                               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="Title"/>
+                    <ImageButton Grid.Column="2" Source="next_48px" BackgroundColor="White" Command="{Binding NextActivityCommand}"/>
+
+                    <Button Grid.Row="2" Grid.ColumnSpan="3" Text="Evaluate"  HorizontalOptions="FillAndExpand" 
+                            BackgroundColor="#ffc107" TextColor="Black" CornerRadius="4" Margin="0, 0"
+                            Command="{Binding EvaluateCommand}" IsEnabled="{Binding IsEvaluationEnable}"/>
+
+                    <Frame Grid.Row="1" Grid.ColumnSpan="3" Margin="16, 8, 16, 8" Padding="16">
+                        <StackLayout Spacing="0">
+                            <Grid RowDefinitions="auto">
+                                <Label Grid.Column="0" Text="Sample name" FontSize="14" FontAttributes="Bold"/>
+                                <Label Grid.Column="1" Text="Tested seeds count" FontSize="14" FontAttributes="Bold"/>
+                                <Label Grid.Column="2" Text="Sample name" FontSize="14" FontAttributes="Bold"/>
+                                <Label Grid.Column="3" Text="Tested seeds count" FontSize="14" FontAttributes="Bold"
+                                       Margin="0,0,16,0" />
+                            </Grid>
+                            <CollectionView ItemsSource="{Binding MaterialList}" SelectionMode="None" >
+                                <CollectionView.ItemsLayout>
+                                    <GridItemsLayout Orientation="Vertical" Span="2" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0" ColumnSpacing="16">
+                                            <Label Grid.Column="0" Text="{Binding composite_sample_name}" FontSize="14" VerticalOptions="CenterAndExpand" />
+                                            <Entry Grid.Column="1" Text="{Binding tested_seeds_count}" Margin="0,0,16,0"
+                                                       Keyboard="Numeric" MaxLength="3" HorizontalTextAlignment="End" ClearButtonVisibility="WhileEditing"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <Button Text="Save tested seeds count" HorizontalOptions="FillAndExpand" Command="{Binding SaveTestedSeedsCountCommand}"
+                                    BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>
+                        </StackLayout>
+                    </Frame>
+
+                    
+                </Grid>
+                
+            </Grid>
+            <!--</ScrollView>-->
+
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

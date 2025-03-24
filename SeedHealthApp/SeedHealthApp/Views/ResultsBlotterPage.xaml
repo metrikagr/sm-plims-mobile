@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.ResultsBlotterPage"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout Padding="8">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8"/>
+
+                <Grid ColumnDefinitions="100,*,100" RowDefinitions="50">
+                    <ImageButton Grid.Column="0" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousMaterialCommand}"/>
+                    <Label Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="18">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text=" Repetition "/>
+                                <Span Text="{Binding SelectedActivity.activity_name}"/>
+                                <Span Text=" / "/>
+                                <Span Text="{Binding SelectedMaterial.composite_sample_name}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <ImageButton Grid.Column="2" Source="next_48px" BackgroundColor="White" Command="{Binding NextMaterialCommand}"/>
+                    
+                </Grid>
+                <Frame>
+                    <StackLayout>
+                        <Button Text="Choose pathogens" Command="{Binding OpenPathogenPickerCommand}" TextColor="White" BackgroundColor="#337ab7" CornerRadius="4"/>
+                        <Grid RowDefinitions="auto">
+                            <Label Grid.Column="0" Text="Pathogen" FontSize="16" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" Text="Seeds count" FontSize="16" FontAttributes="Bold"
+                                       Margin="0,0,4,0" HorizontalTextAlignment="End"/>
+                        </Grid>
+                        <ListView ItemsSource="{Binding SelectedPathogenItemList}" SelectionMode="None"
+                                  HasUnevenRows="True" SeparatorVisibility="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <Grid ColumnDefinitions="2*,1*" RowDefinitions="auto">
+                                            <Label Grid.Column="0" Text="{Binding PathogenName}" FontSize="16" VerticalOptions="CenterAndExpand"/>
+                                            <Entry Grid.Column="1" Text="{Binding SeedsCount}" Margin="0,0,4,0"
+                                                    Keyboard="Numeric" MaxLength="3" HorizontalTextAlignment="End" ClearButtonVisibility="WhileEditing"/>
+                                        </Grid>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <Button Text="Save material results" HorizontalOptions="FillAndExpand" Command="{Binding SaveEvaluationCommmand}"
+                                BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>
+                    </StackLayout>
+                </Frame>
+                <Button Text="Finish evaluation" HorizontalOptions="FillAndExpand" Command="{Binding FinishEvaluationCommand}"
+                        BackgroundColor="#ffc107" TextColor="Black" CornerRadius="4"/>
+            </StackLayout>
+
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

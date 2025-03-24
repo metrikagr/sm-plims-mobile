@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Frame xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SeedHealthApp.Dialogs.MessageDialog"
+       xmlns:prism="http://prismlibrary.com"
+       prism:DialogLayout.CloseOnBackgroundTapped="False"
+       prism:DialogLayout.RelativeWidthRequest="0.9"
+       prism:DialogLayout.RelativeHeightRequest="0.9">
+    <Frame.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <BoxView Color="Black" />
+            <Label Text="{Binding Title}"
+                   Style="{DynamicResource TitleStyle}"
+                   Margin="20,5"
+                   TextColor="White" />
+            <Editor Text="{Binding Message}"
+                   Margin="20,0,20,10"
+                   Grid.Row="1"/>
+            <Button Text="Ok"
+                    Command="{Binding CloseCommand}"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,10"
+                    Grid.Row="2"/>
+        </Grid>
+    </Frame.Content>
+</Frame>
+

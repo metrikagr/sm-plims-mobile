@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             x:Class="SeedHealthApp.Views.ResultsPcrPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:MathExpressionConverter x:Key="MathExpressionConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout Padding="8">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8"/>
+
+                <Grid VerticalOptions="FillAndExpand">
+                    <Frame >
+                        <StackLayout>
+                            <Grid RowDefinitions="auto, *, 40" ColumnDefinitions="1*, 1*">
+                                <StackLayout Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                    <Label  Text="Material list" FontSize="Subtitle" FontAttributes="Bold" HorizontalOptions="StartAndExpand" 
+                                            VerticalTextAlignment="Center"/>
+                                    <Button BackgroundColor="White" Text="Check All" HorizontalOptions="End"
+                                        Command="{Binding CheckAllCommand}" CommandParameter="materials" HeightRequest="40"/>
+                                </StackLayout>
+                                <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MaterialList}" SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <Grid ColumnDefinitions="*, 50">
+                                                    <Label Grid.Column="0" Text="{Binding Item.composite_sample_name}" VerticalOptions="CenterAndExpand"/>
+                                                    <CheckBox Grid.Column="1" IsChecked="{Binding Selected}" VerticalOptions="CenterAndExpand"/>
+                                                </Grid>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+
+                                <StackLayout Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Padding="0">
+                                    <Label  Text="Pathogens" FontSize="Subtitle" FontAttributes="Bold" HorizontalOptions="StartAndExpand"
+                                            VerticalTextAlignment="Center"/>
+                                    <Button BackgroundColor="White" Text="Check All" HorizontalOptions="End"
+                                        Command="{Binding CheckAllCommand}" CommandParameter="pathogens" HeightRequest="40"/>
+                                </StackLayout>
+                                <ListView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding PathogenList}" SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <Grid ColumnDefinitions="*, 50">
+                                                    <Label Grid.Column="0" Text="{Binding PathogenName}" VerticalOptions="CenterAndExpand"/>
+                                                    <CheckBox Grid.Column="1" IsChecked="{Binding IsSelected}" VerticalOptions="CenterAndExpand"/>
+                                                </Grid>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+
+                                <Button  Grid.Row="2" Grid.Column="1" Text="Process" HorizontalOptions="EndAndExpand"
+                                         Command="{Binding ProcessCommand}" BackgroundColor="#337ab7" TextColor="White"/>
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame IsVisible="{Binding IsConfigured}" >
+                        <StackLayout>
+                            <Grid ColumnDefinitions="50,*,50" RowDefinitions="54">
+                                <ImageButton Grid.Column="0" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousMaterialCommand}"/>
+                                <Label Grid.Column="1" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" FontSize="18">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding SelectedMaterial.composite_sample_name}"/>
+                                            <Span Text="&#10;("/>
+                                            <Span Text="{Binding SelectedMaterialListIndex, Converter={StaticResource MathExpressionConverter}, ConverterParameter='x+1'}"/>
+                                            <Span Text=" of "/>
+                                            <Span Text="{Binding SelectedMaterialList.Count}"/>
+                                            <Span Text=" materials)"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                                <ImageButton Grid.Column="2" Source="next_48px" BackgroundColor="White" Command="{Binding NextMaterialCommand}"/>
+                                
+                                
+                            </Grid>
+                            <CollectionView ItemsSource="{Binding ResultList}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout Padding="8">
+                                            <Frame CornerRadius="8" Margin="0">
+                                                <StackLayout Orientation="Horizontal">
+                                                    <Label Text="{Binding AgentName}" HorizontalOptions="FillAndExpand"/>
+                                                    <Switch IsToggled="{Binding IsChecked}" WidthRequest="50" HorizontalOptions="End"/>
+                                                </StackLayout>
+                                            </Frame>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                            <Button Grid.Column="3" Text="Save material results" HorizontalOptions="FillAndExpand" Command="{Binding SaveEvaluationCommmand}"
+                                        BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>
+                            <Button Grid.Column="4" Text="Finish evaluation" HorizontalOptions="FillAndExpand" Command="{Binding FinishEvaluationCommand}"
+                                        BackgroundColor="#ffc107" TextColor="Black" CornerRadius="4"/>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+            </StackLayout>
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

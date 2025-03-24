@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  xmlns:prism="http://prismlibrary.com"
+                  prism:ViewModelLocator.AutowireViewModel="True"
+                  xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+                  xmlns:viewmodels="clr-namespace:SeedHealthApp.ViewModels"
+                  xmlns:m="clr-namespace:SeedHealthApp.Models"
+                  x:DataType="viewmodels:HomeFlyoutPageViewModel"
+                  x:Class="SeedHealthApp.Views.HomeFlyoutPage"
+                  FlyoutLayoutBehavior="Popover">
+
+    <MasterDetailPage.Master>
+        <ContentPage Title="Menu">
+            <ContentPage.Resources>
+                <ResourceDictionary>
+                    <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+                    <!--<converters:IsNotNullConverter x:Key="IsNotNullConverter"/>-->
+                </ResourceDictionary>
+            </ContentPage.Resources>
+            <Grid RowDefinitions="150, *, auto, auto, 50"
+                RowSpacing="0">
+                <Grid BackgroundColor="Green">
+                    <Label VerticalOptions="End" Text="{Binding Username, StringFormat='Welcome {0}'}" FontSize="16" TextColor="White" FontAttributes="Bold" Padding="16"/>
+                </Grid>
+                <StackLayout Grid.Row="1" Padding="0, 0" VerticalOptions="FillAndExpand">
+                    <Grid
+                        RowSpacing="0"
+                        RowDefinitions="32, 32, 32"
+                        ColumnDefinitions="24, *"
+                        Padding="8"
+                        BackgroundColor="LightGray">
+                        <Image Grid.Column="0"
+                            Source="management_48.png"/>
+                        <Label Grid.Row="0" Grid.Column="1"
+                            Text="{Binding Role, StringFormat=' {0}'}"
+                            LineBreakMode="TailTruncation"
+                            VerticalTextAlignment="Center"/>
+                        <Image Grid.Row="1"
+                            Source="museum_48.png"/>
+                        <Label Grid.Row="1" Grid.Column="1"
+                            Text="{Binding InstitutionName, StringFormat=' {0}'}"
+                            LineBreakMode="TailTruncation"
+                            VerticalTextAlignment="Center"/>
+                        <Image Grid.Row="2"
+                            Source="test_tube_48.png"/>
+                        <Label Grid.Row="2" Grid.Column="1"
+                            Text="{Binding LaboratoryName, StringFormat=' {0}'}"
+                            LineBreakMode="TailTruncation"
+                            VerticalTextAlignment="Center"/>
+                    </Grid>
+                    
+                    <ListView
+                        ItemsSource="{Binding NavigationMenuItemList}"
+                        SelectedItem="{Binding SelectedMenuItem}"
+                        HeightRequest="100">
+                        <ListView.Behaviors>
+                            <prism:EventToCommandBehavior EventName="ItemTapped" 
+                                      Command="{Binding ItemTappedCommand}"/>
+                        </ListView.Behaviors>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell x:DataType="m:NavigationMenuItem">
+                                    <StackLayout Orientation="Horizontal" >
+                                        <StackLayout.Padding>
+                                            <OnPlatform x:TypeArguments="Thickness" WinPhone="32, 10, 16, 10" Android="32, 0, 16, 0"/>
+                                        </StackLayout.Padding>
+                                        <Label VerticalTextAlignment="Center" Text="{Binding Text}" FontAttributes="Bold" TextColor="Black"/>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+                
+                <Label Grid.Row="3"
+                    Text="{Binding AppVersion, StringFormat='Version {0}'}"
+                    VerticalTextAlignment="Center"
+                    HorizontalTextAlignment="Center"
+                    Padding="8,0"/>
+                <StackLayout Grid.Row="4">
+                    <Button Text="Log out" Command="{Binding LogoutCommand}"/>
+                </StackLayout>
+            </Grid>
+        </ContentPage>
+    </MasterDetailPage.Master>
+    
+</MasterDetailPage>

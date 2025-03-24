@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:controls="clr-namespace:SeedHealthApp.Custom.Controls"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             x:Class="SeedHealthApp.Views.ResultsGerminationTestPage"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout Padding="8">
+
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8"/>
+                <Grid ColumnDefinitions="100,*,100" RowDefinitions="50">
+                    <ImageButton Grid.Column="0" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousMaterialCommand}"/>
+                    <Label Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="18">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text=" Repetition "/>
+                                <Span Text="{Binding SelectedActivity.activity_name}"/>
+                                <Span Text=" / "/>
+                                <Span Text="{Binding SelectedMaterial.composite_sample_name}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <ImageButton Grid.Column="2" Source="next_48px" BackgroundColor="White" Command="{Binding NextMaterialCommand}"/>
+                </Grid>
+
+                <xct:TabView TabStripPlacement="Top" TabStripBackgroundColor="WhiteSmoke" TabStripHeight="60" 
+                            TabIndicatorColor="#FF4081" TabContentBackgroundColor="White">
+
+                    <xct:TabViewItem Text="Seeds counts" TextColor="Gray" TextColorSelected="#FF4081" FontSize="12">
+                        <StackLayout Padding="16">
+                            <Grid RowDefinitions="50" IsVisible="false">
+                                <Label Grid.Column="0" Text="Descriptors" FontSize="16" FontAttributes="Bold"/>
+                                <Label Grid.Column="1" Text="Seeds count" FontSize="16" FontAttributes="Bold"
+                                       Margin="0,0,4,0" HorizontalTextAlignment="End"/>
+                            </Grid>
+                            <ListView ItemsSource="{Binding GerminationTestAgentItemList}" SelectionMode="None"
+                                              HasUnevenRows="True" SeparatorVisibility="None">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Grid ColumnDefinitions="2*,1*" RowDefinitions="auto">
+                                                <Label Grid.Column="0" Text="{Binding AgentName}" FontSize="16" VerticalOptions="CenterAndExpand"/>
+                                                <controls:BorderlessEntry
+                                                    Grid.Column="1"
+                                                    Text="{Binding SeedsCount}"
+                                                    Margin="0,0,4,0"
+                                                    Keyboard="Numeric"
+                                                    MaxLength="3"
+                                                    HorizontalTextAlignment="End"
+                                                    ClearButtonVisibility="WhileEditing"/>
+                                            </Grid>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackLayout>
+                    </xct:TabViewItem>
+
+                    <xct:TabViewItem Text="Symptons" TextColor="Gray" TextColorSelected="#FF4081" FontSize="12">
+                        <StackLayout Padding="16">
+                            <Grid ColumnDefinitions="2*,1*" RowDefinitions="auto">
+                                <Label Grid.Column="0" Text="{Binding SymptomsNumber.AgentName}" FontSize="16" VerticalOptions="CenterAndExpand"/>
+                                <controls:BorderlessEntry
+                                    Grid.Column="1"
+                                    Margin="0,0,4,0"
+                                    HorizontalOptions="FillAndExpand"
+                                    Text="{Binding SymptomsNumber.SeedsCount}"
+                                    Keyboard="Numeric"
+                                    MaxLength="3"
+                                    ClearButtonVisibility="WhileEditing"/>
+                            </Grid>
+
+                            <Label
+                                Text="{Binding SymptomsType.AgentName}"
+                                FontSize="16"
+                                VerticalOptions="Start"/>
+                            <Editor
+                                Text="{Binding SymptomsType.SeedsCount}"
+                                HeightRequest="100"
+                                VerticalOptions="Start"/>
+                        </StackLayout>
+                    </xct:TabViewItem>
+                </xct:TabView>
+
+                <Button Text="Save material results" HorizontalOptions="FillAndExpand" Command="{Binding SaveEvaluationCommmand}"
+                                BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>
+                
+                <Button Text="Finish evaluation" HorizontalOptions="FillAndExpand" Command="{Binding FinishEvaluationCommand}"
+                        BackgroundColor="#ffc107" TextColor="Black" CornerRadius="4"/>
+            </StackLayout>
+
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:Charts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             xmlns:m="clr-namespace:SeedHealthApp.Models"
+             x:DataType="vm:AssayPageViewModel"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.AssayPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:BoolToObjectConverter x:Key="BoolToObjectConverter" TrueObject="Start" FalseObject="Continue" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid RowDefinitions="*, auto, auto" RowSpacing="0">
+            <ScrollView Padding="0">
+                <StackLayout Padding="0" BackgroundColor="White" Spacing="0">
+                    <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="8,4" FontSize="16"/>
+
+                    <Frame BackgroundColor="#F8F8F8" HasShadow="True" Margin="16,4" Padding="0">
+                        <Grid RowSpacing="0" ColumnSpacing="4" RowDefinitions="auto, auto, auto, auto, 50, 8" Padding="0" >
+                            <Grid RowSpacing="0" ColumnSpacing="4" RowDefinitions="auto, auto, auto, auto, auto, auto" ColumnDefinitions="1*,1*" Padding="16,16,16,8">
+                                <Label Grid.Row="0" Grid.Column="0" Text="Sample type : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding SelectedActiveAssaySampleType.sample_type_name}" FontSize="14" TextColor="#888888"/>
+                                <Label Grid.Row="1" Grid.Column="0" Text="Status : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding SelectedActiveAssaySampleType.status_name}" FontSize="14" TextColor="#888888" />
+
+                                <Label Grid.Row="2" Grid.Column="0" Text="Start date : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding SelectedActiveAssaySampleType.start_date}" FontSize="14" TextColor="#888888"/>
+                                <Label Grid.Row="3" Grid.Column="0" Text="Finish date : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                <Label Grid.Row="3" Grid.Column="1" Text="{Binding SelectedActiveAssaySampleType.finish_date}" FontSize="14" TextColor="#888888" />
+
+                                <Label Grid.Row="4" Grid.Column="0" Text="Repetitions : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                <Label Grid.Row="4" Grid.Column="1" Text="{Binding SelectedActiveAssaySampleType.activity_qty}" FontSize="14" TextColor="#888888"/>
+                                <Label Grid.Row="5" Grid.Column="0" Text="Container type : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                <Label Grid.Row="5" Grid.Column="1" Text="{Binding SelectedActiveAssaySampleType.type_name}" FontSize="14" TextColor="#888888" />
+                            </Grid>
+
+                            <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="DarkGray" Margin="0, 4, 0, 4"/>
+
+                            <Grid Padding="16,0" Grid.Row="2" RowSpacing="0" RowDefinitions="auto, auto, auto, auto, auto" ColumnDefinitions="1*,1*">
+                                <Label Grid.Row="0" Grid.ColumnSpan="2" Text="Sub-process: Preparation" Margin="0, 4" FontAttributes="Bold"/>
+                                <Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnDefinitions="60, *" RowDefinitions="20,20,20,20,20,auto" RowSpacing="0">
+                                    <!--<BoxView Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" BackgroundColor="LightGray" />-->
+                                    <Charts:ChartView Grid.Row="0" Grid.Column="0" Grid.RowSpan="4"
+                                                  Chart="{Binding Step1DonutChart}" VerticalOptions="Fill" HorizontalOptions="Fill"/>
+                                    <Label Grid.Row="0" Grid.RowSpan="5" Text="{Binding RequestProcessAssayStepList.preparation.percent, StringFormat='{0}%'}" 
+                                       VerticalOptions="End" HorizontalOptions="Center" FontAttributes="Bold" FontSize="18"/>
+
+                                    <Label Grid.Row="0" Grid.Column="1"
+                                        Text="{Binding RequestProcessAssayStepList.preparation.status, StringFormat='Status: {0}'}"
+                                        VerticalTextAlignment="Center"/>
+                                    <Label Grid.Row="1" Grid.Column="1"
+                                        Text="{Binding RequestProcessAssayStepList.preparation.StepProgress, StringFormat='Completed: {0}'}"
+                                        BackgroundColor="Transparent"
+                                        VerticalTextAlignment="Center"
+                                        LineBreakMode="TailTruncation"/>
+                                    <Label Grid.Row="2" Grid.Column="1"
+                                        Text="{Binding RequestProcessAssayStepList.preparation.users, StringFormat='By: {0}'}"
+                                        VerticalTextAlignment="Center"
+                                        LineBreakMode="TailTruncation"/>
+
+                                    <Label Grid.Row="3" Grid.Column="1"
+                                        Text="{Binding RequestProcessAssayStepList.preparation.start_date, StringFormat='Started at: {0}'}" VerticalTextAlignment="Center"/>
+                                    <Label Grid.Row="4" Grid.Column="1"
+                                        Text="{Binding RequestProcessAssayStepList.preparation.finish_date, StringFormat='Finished at: {0}'}" VerticalTextAlignment="Center"/>
+
+                                    <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="40">
+                                        <Button Grid.Column="0"
+                                            Text="{Binding IsAssayPending, Converter={StaticResource BoolToObjectConverter}}" 
+                                            Style="{StaticResource Key=GreenButtonStyle}"
+                                            Command="{Binding NavigateToEvaluationStep1Command}"/>
+                                        <Button Grid.Column="1"
+                                            Text="Finish" Style="{StaticResource Key=BlueButtonStyle}"
+                                            Command="{Binding FinishStep1Command}"/>
+                                    </Grid>
+                                </Grid>
+
+                                <Label Grid.Row="2" Grid.ColumnSpan="2" Text="Sub-process: Evaluation" Margin="0, 4" FontAttributes="Bold"/>
+                                <Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="60, *" RowDefinitions="20,20,20,20,20,auto" RowSpacing="0" >
+                                    <!--<BoxView Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" BackgroundColor="LightGray" />-->
+                                    <Charts:ChartView Grid.Row="0" Grid.Column="0" Grid.RowSpan="4"
+                                                  Chart="{Binding Step2DonutChart}" VerticalOptions="Fill" HorizontalOptions="Fill" />
+                                    <Label Grid.Row="0" Grid.RowSpan="5" Text="{Binding RequestProcessAssayStepList.evaluation.percent, StringFormat='{0}%'}" 
+                                       VerticalOptions="End" HorizontalOptions="Center" FontAttributes="Bold"  FontSize="18"/>
+
+                                    <Label Grid.Row="0" Grid.Column="1"
+                                        Text="{Binding RequestProcessAssayStepList.evaluation.status, StringFormat='Status: {0}'}" VerticalTextAlignment="Center"/>
+                                    <Label Grid.Row="1" Grid.Column="1" 
+                                       Text="{Binding RequestProcessAssayStepList.evaluation.StepProgress, StringFormat='Completed: {0}'}" VerticalTextAlignment="Center" LineBreakMode="TailTruncation"/>
+                                    <Label Grid.Row="2" Grid.Column="1" 
+                                        Text="{Binding RequestProcessAssayStepList.evaluation.users, StringFormat='By: {0}'}" VerticalTextAlignment="Center" LineBreakMode="TailTruncation"/>
+                                    <Label Grid.Row="3" Grid.Column="1"
+                                        Text="{Binding RequestProcessAssayStepList.evaluation.start_date, StringFormat='Started at: {0}'}" VerticalTextAlignment="Center"/>
+                                    <Label Grid.Row="4" Grid.Column="1"
+                                        Text="{Binding RequestProcessAssayStepList.evaluation.finish_date, StringFormat='Finished at: {0}'}" VerticalTextAlignment="Center"/>
+
+                                    <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="40">
+                                        <Button Grid.Column="1"
+                                            Text="Continue"
+                                            Style="{StaticResource Key=GreenButtonStyle}"
+                                            Command="{Binding NavigateToEvaluationStep2Command}"/>
+                                        <Button Grid.Column="1"
+                                            Text="Finish"
+                                            Style="{StaticResource Key=OrangeButtonStyle}"
+                                            Command="{Binding FinishStep2Command}"/>
+                                    </Grid>
+                                </Grid>
+                                
+                                <StackLayout Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" Padding="0">
+                                    <CheckBox />
+                                    <Label Text="Marked to reprocess" VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                            </Grid>
+                            
+                            <BoxView Grid.Row="3" HeightRequest="1" BackgroundColor="DarkGray" Margin="0, 4, 0, 4"/>
+                            
+                            <StackLayout Grid.Row="4" Orientation="Horizontal" Padding="4,0" FlowDirection="RightToLeft">
+                                <Button Text="Sync" Style="{StaticResource Key=BlueButtonStyle}" HeightRequest="40" VerticalOptions="Center" Margin="0">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button" Binding="{Binding Source={Reference switchOffline}, Path=IsToggled}" Value="true">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Button" Binding="{Binding Source={Reference switchOffline}, Path=IsToggled}" Value="false">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                                <Switch x:Name="switchOffline" IsToggled="{Binding SelectedActiveAssaySampleType.IsAvailableOffline, Mode=OneWay}" Margin="0">
+                                    <Switch.Behaviors>
+                                        <xct:EventToCommandBehavior EventName="Toggled" Command="{Binding SetConnectivityModeCommand}"/>
+                                    </Switch.Behaviors>
+                                </Switch>
+                                <Label Text="Available offline" Margin="0" VerticalTextAlignment="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Source={Reference switchOffline}, Path=IsToggled}" Value="true">
+                                            <Setter Property="TextColor" Value="Green"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Source={Reference switchOffline}, Path=IsToggled}" Value="false">
+                                            <Setter Property="TextColor" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </StackLayout>
+                            <Grid Grid.Row="5">
+                                
+                            </Grid>
+
+                        </Grid>
+                    </Frame>
+                    
+                </StackLayout>
+            </ScrollView>
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+            <StackLayout Grid.Row="1" Padding="0" IsVisible="{Binding IsOffline}" BackgroundColor="MistyRose">
+                <Label Style="{StaticResource Key=ConnectivityLabelStyle }"/>
+            </StackLayout>
+            <StackLayout Grid.Row="2" IsVisible="{Binding ShowDebugInfo}" Padding="0">
+                <Button Text="debug info" Command="{Binding ShowDebugInfoCommand}" Margin="0"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+
+</ContentPage>

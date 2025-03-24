@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<prism:PrismApplication xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             x:Class="SeedHealthApp.App">
+  <Application.Resources>
+        <Color x:Key="GreenColor">#00a65a</Color>
+        <Color x:Key="BlueColor">#337ab7</Color>
+        <Color x:Key="OrangeColor">#ffc107</Color>
+        <Style x:Key="GreenButtonStyle" TargetType="Button">
+            <Setter Property="BackgroundColor">#00a65a</Setter>
+            <Setter Property="TextColor">White</Setter>
+            <Setter Property="CornerRadius">4</Setter>
+        </Style>
+        <Style x:Key="BlueButtonStyle" TargetType="Button">
+            <Setter Property="BackgroundColor">#337ab7</Setter>
+            <Setter Property="TextColor">White</Setter>
+            <Setter Property="CornerRadius">4</Setter>
+        </Style>
+        <Style x:Key="OrangeButtonStyle" TargetType="Button">
+            <Setter Property="BackgroundColor">#ffc107</Setter>
+            <Setter Property="TextColor">Black</Setter>
+            <Setter Property="CornerRadius">4</Setter>
+        </Style>
+        <Style x:Key="ConnectivityLabelStyle" TargetType="Label">
+            <Setter Property="Text">Offline mode - using local data</Setter>
+            <Setter Property="Padding">0</Setter>
+            <Setter Property="FontSize">17</Setter>
+            <Setter Property="VerticalTextAlignment">Center</Setter>
+            <Setter Property="HorizontalTextAlignment">Center</Setter>
+            <Setter Property="BackgroundColor">Gray</Setter>
+            <Setter Property="TextColor">WhiteSmoke</Setter>
+        </Style>
+        <!-- Application resource dictionary -->
+
+  </Application.Resources>
+</prism:PrismApplication>

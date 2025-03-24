@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.LoginPage"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:IsNullOrEmptyConverter x:Key="IsNullOrEmptyConverter" />
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid RowDefinitions="1*,3*,1*,20" ColumnDefinitions="1*,auto,1*" RowSpacing="0" Padding="0">
+            <StackLayout Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="3" 
+                         Padding="0" Margin="0" 
+                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <Image Source="cimmyt_backgroud.png" Aspect="AspectFill" Margin="0" VerticalOptions="FillAndExpand"/>
+            </StackLayout>
+
+
+            <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="#eaffffff" CornerRadius="16" HasShadow="False">
+                <ScrollView>
+                    <StackLayout>
+                        <Label  Text="WELCOME TO SEED HEALTH APP" 
+                            HorizontalTextAlignment="Center"
+                            FontSize="Large" FontAttributes="Bold" Padding="0,0,0,20" />
+                        <Label Text="WHAT IS THIS?" FontAttributes="Bold" Padding="8, 8, 8, 0"/>
+                        <Label Text="This is an Android application for laboratory results management in the International Maize and Wheat Improvement Center."
+                           Padding="8"/>
+
+                        <Button Text="Login with CIMMYT account"
+                             Command="{Binding LoginCommand}"
+                             HorizontalOptions="Center" WidthRequest="300" VerticalOptions="EndAndExpand"
+                             BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>
+
+                        <Label Text="{Binding LoginMessage}"
+                               HorizontalOptions="CenterAndExpand"
+                               TextColor="Red"
+                               IsVisible="{Binding IsLoginEnabled, Converter={StaticResource InvertedBoolConverter}}"/>
+
+                        <Button Command="{Binding OpenSettingsCommand}"
+                                HorizontalOptions="Center"
+                                Text="Server configuration"
+                                Padding="8, 0"
+                                BackgroundColor="WhiteSmoke"
+                                TextColor="#5B5B5B"
+                                TextTransform="None"
+                                CornerRadius="4"
+                                ImageSource="settings_32.png">
+                        </Button>
+                    </StackLayout>
+                </ScrollView>
+            </Frame>
+            <Label Grid.Row="3" Grid.ColumnSpan="3" Text="{Binding AppVersion, StringFormat='Version {0}'}" Margin="0" FontAttributes="Bold"
+                   BackgroundColor="WhiteSmoke" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" VerticalOptions="FillAndExpand"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

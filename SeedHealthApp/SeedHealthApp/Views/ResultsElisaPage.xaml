@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com" 
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.ResultsElisaPage"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout Padding="8">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8"/>
+
+                <Grid BindableLayout.ItemsSource="{Binding LocationList}" BackgroundColor="Aqua" IsVisible="False"
+                                   RowDefinitions="40,40,40,40" ColumnDefinitions="30,30,30,30,30,30,30,30,30,30,30,30">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <BoxView Grid.Column="{Binding Position}" BackgroundColor="Green" 
+                                                 HeightRequest="40" WidthRequest="40"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </Grid>
+
+                <Frame >
+                    <StackLayout>
+                        <Grid RowDefinitions="*, auto" ColumnDefinitions="1*, 1*" RowSpacing="4">
+                            <StackLayout Grid.Row="0" Grid.Column="0" >
+                                <StackLayout  Orientation="Horizontal" Padding="0">
+                                    <Label  Text="Pathogens" FontSize="Subtitle" FontAttributes="Bold" HorizontalOptions="StartAndExpand"
+                                            VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                                <ListView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding PathogenList}" SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <Grid ColumnDefinitions="*, 50">
+                                                    <Label Grid.Column="0" Text="{Binding PathogenName}" VerticalOptions="CenterAndExpand"/>
+                                                    <CheckBox Grid.Column="1" IsChecked="{Binding IsSelected}" VerticalOptions="CenterAndExpand"/>
+                                                </Grid>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="0" Grid.Column="1" Orientation="Vertical" >
+                                <Label  Text="Selected requests" FontSize="Subtitle" FontAttributes="Bold" HorizontalOptions="StartAndExpand"
+                                            VerticalTextAlignment="Center"/>
+
+                                <Frame CornerRadius="8" BorderColor="#FF4081" Padding="4" xct:TouchEffect.NativeAnimation="True">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SearchRequestsCommand}"/>
+                                    </Frame.GestureRecognizers>
+                                    <Entry Placeholder="Select request" InputTransparent="True">
+                                        <!--<Entry.Behaviors>
+                                        <prism:EventToCommandBehavior EventName="Focused" Command="{Binding SearchRequestsCommand}"/>
+                                    </Entry.Behaviors>-->
+                                    </Entry>
+                                </Frame>
+                                
+                                <Grid>
+                                    <StackLayout>
+                                        <FlexLayout BindableLayout.ItemsSource="{Binding SelectedRequestList}" Wrap="Wrap"
+                                                JustifyContent="Start" Margin="0,10,0,0">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate>
+                                                    <!--<StackLayout HeightRequest="35" BackgroundColor="Azure">-->
+                                                    <Frame BackgroundColor="White" CornerRadius="15" Padding="8, 0 , 8, 0" HeightRequest="34" Margin="0,0,8,4">
+                                                        <!--<Frame.GestureRecognizers>
+                                                            <TapGestureRecognizer  Command="{Binding RemoveRequestCommand, Source={RelativeSource AncestorType={x:Type vm:ResultsElisaPageViewModel}}}" 
+                                                                                   CommandParameter="{Binding request_id}"/>
+                                                        </Frame.GestureRecognizers>-->
+
+                                                        <StackLayout Orientation="Horizontal" Padding="0" Margin="0">
+                                                            <Label Text="{Binding formatted_request_code}" VerticalTextAlignment="Center" />
+                                                            <ImageButton Source="ic_mtrl_chip_close_circle" WidthRequest="18" BackgroundColor="Transparent"
+                                                                         Command="{Binding RemoveRequestCommand, Source={RelativeSource AncestorType={x:Type vm:ResultsElisaPageViewModel}}}" 
+                                                                         CommandParameter="{Binding request_id}"/>
+                                                        </StackLayout>
+                                                    </Frame>
+                                                    <!--</StackLayout>-->
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </FlexLayout>
+                                    </StackLayout>
+                                    <StackLayout IsVisible="{Binding IsRequestListVisible}" BackgroundColor="White">
+                                        <Frame HasShadow="True" Padding="0" VerticalOptions="FillAndExpand">
+                                            <ListView ItemsSource="{Binding ElisaRequestList}" SelectedItem="{Binding SelectedRequestLookup}">
+                                                <ListView.Behaviors>
+                                                    <prism:EventToCommandBehavior EventName="ItemSelected" Command="{Binding RequestSelectedCommand}"/>
+                                                </ListView.Behaviors>
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <ViewCell>
+                                                            <Label Text="{Binding request_code}" VerticalTextAlignment="Center" Padding="8,0,0,0"/>
+                                                        </ViewCell>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        </Frame>
+                                    </StackLayout>
+                                </Grid>
+                            </StackLayout>
+
+                            <Button Grid.Row="1" Grid.Column="1"
+                                Text="Save"
+                                HorizontalOptions="EndAndExpand"
+                                Command="{Binding SetDistributionCommand}"
+                                BackgroundColor="#337ab7"
+                                TextColor="White"
+                                CornerRadius="4" />
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+
+                <Grid VerticalOptions="FillAndExpand" IsVisible="False">
+                    
+
+                    <Frame IsVisible="{Binding IsDataVisible}">
+                        <StackLayout Orientation="Horizontal">
+                            <StackLayout WidthRequest="150">
+
+                                <StackLayout RadioButtonGroup.GroupName="EntryType" RadioButtonGroup.SelectedValue="{Binding EntryType}">
+                                    <!--<Label Text="Entry type:" />-->
+                                    <RadioButton Content="Entry" Value="Entry" IsChecked="True"/>
+                                    <RadioButton Content="Pos" Value="Positive" />
+                                    <RadioButton Content="Neg" Value="Negative" />
+                                    <RadioButton Content="Buffer" Value="Buffer"/>
+                                </StackLayout>
+
+                                <Label Text="Request SH=-310"/>
+                                <Label Text="1 of 10 materials"/>
+                                <Button Text="Save evaluation" HorizontalOptions="FillAndExpand" 
+                                    BackgroundColor="#ffc107" TextColor="Black" CornerRadius="4"/>
+
+                                <Button Grid.Row="1" Grid.Column="1" Text="&lt; Config" HorizontalOptions="StartAndExpand" Command="{Binding BackCommand}"
+                                    VerticalOptions="EndAndExpand" BackgroundColor="#337ab7" TextColor="White" CornerRadius="4"/>
+                            </StackLayout>
+
+                            <ScrollView Orientation="Horizontal" HorizontalOptions="CenterAndExpand"  WidthRequest="540" IsVisible="true">
+                            <CollectionView ItemsSource="{Binding LocationList}" ItemsLayout="VerticalGrid, 12" ItemSizingStrategy="MeasureFirstItem" WidthRequest="540"
+                                            HorizontalOptions="CenterAndExpand">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout WidthRequest="44" HeightRequest="44" Padding="2" Margin="0">
+                                            <Frame Margin="0" Padding="0" BorderColor="#ffc107" WidthRequest="40" HeightRequest="40" CornerRadius="25" HasShadow="False">
+                                                <Label Text="{Binding Position}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" TextColor="Gray"/>
+                                            </Frame>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            </ScrollView>
+
+                            <Grid ColumnDefinitions="80" RowDefinitions="100,*,100,100" HorizontalOptions="EndAndExpand">
+                                <ImageButton Grid.Row="0" Grid.Column="0" Source="back_48px" BackgroundColor="White" Command="{Binding BackCommand}"/>
+                                <Label Grid.Row="1" Grid.Column="0" Text="Plate&#10;Nro 1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="18"/>
+                                <ImageButton Grid.Row="2" Grid.Column="0" Source="plus_48" BackgroundColor="White" Command="{Binding AddPlateCommand}" Padding="4"/>
+                                <ImageButton Grid.Row="3" Grid.Column="0" Source="next_48px" BackgroundColor="White" Command="{Binding NextCommand}"/>
+                            </Grid>
+
+                            <ScrollView IsVisible="false">
+                                <Grid x:Name="GridPlate" RowDefinitions="40,40,40,40,40,40,40,40" HorizontalOptions="Center"
+                                  ColumnDefinitions="40,40,40,40,40,40,40,40,40,40,40,40" IsVisible="true">
+                                    <Button x:Name="btn1" Grid.Column="0" BackgroundColor="#3f8449" CornerRadius="25" Command="{Binding SelectLocationCommand}"/>
+                                    <Button x:Name="btn2" Grid.Column="1" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn3" Grid.Column="2" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn4" Grid.Column="3" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn5" Grid.Column="4" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn6" Grid.Column="5" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn7" Grid.Column="6" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn8" Grid.Column="7" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn9" Grid.Column="8" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn10" Grid.Column="9" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn11" Grid.Column="10" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <Button x:Name="btn12" Grid.Column="11" BackgroundColor="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="0" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="1" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="2" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="3" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="4" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="5" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="6" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="7" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="8" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="9" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="10" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="1" Grid.Column="11" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="0" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="1" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="2" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="3" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="4" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="5" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="6" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="7" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="8" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="9" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="10" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="2" Grid.Column="11" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="0" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="1" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="2" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="3" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="4" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="5" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="6" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="7" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="8" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="9" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="10" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="3" Grid.Column="11" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="0" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="1" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="2" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="3" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="4" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="5" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="6" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="7" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="8" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="9" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="10" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="4" Grid.Column="11" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="0" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="1" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="2" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="3" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="4" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="5" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="6" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="7" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="8" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="9" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="10" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="5" Grid.Column="11" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="0" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="1" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="2" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="3" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="4" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="5" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="6" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="7" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="8" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="9" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="10" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="6" Grid.Column="11" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="0" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="1" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="2" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="3" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="4" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="5" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="6" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="7" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="8" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="9" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="10" Color="#3f8449" CornerRadius="25"/>
+                                    <BoxView Grid.Row="7" Grid.Column="11" Color="#3f8449" CornerRadius="25"/>
+                                </Grid>
+                            </ScrollView>
+
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+
+            </StackLayout>
+
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

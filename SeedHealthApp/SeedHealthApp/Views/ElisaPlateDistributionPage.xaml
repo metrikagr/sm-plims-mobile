@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:viewmodels="clr-namespace:SeedHealthApp.ViewModels"
+    xmlns:models="clr-namespace:SeedHealthApp.Models"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    xmlns:converters="clr-namespace:SeedHealthApp.Custom.Converters"
+    x:DataType="viewmodels:ElisaPlateDistributionPageViewModel"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="SeedHealthApp.Views.ElisaPlateDistributionPage"
+    NavigationPage.HasBackButton="True"
+    Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <xct:BoolToObjectConverter x:Key="BoolToObjectConverter" TrueObject="Orange" FalseObject="Green"/>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+            <converters:ReadingDataEntryToFontSizeConverter x:Key="ReadingDataEntryToFontSizeConverter"/>
+            <converters:IsReadingDataEntryConverter x:Key="IsReadingDataEntryConverter"/>
+            <converters:IsNotReadingDataEntryConverter x:Key="IsNotReadingDataEntryConverter"/>
+            <x:Boolean x:Key="FalseValue">False</x:Boolean>
+            <x:Boolean x:Key="TrueValue">True</x:Boolean>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <!--<ToolbarItem
+            Text="Debug info"
+            Command="{Binding ShowDebugInfoCommand}"
+            Order="Secondary"/>-->
+        <ToolbarItem
+            Text="Save"
+            Command="{Binding SaveCommand}"/>
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <Grid
+            ColumnDefinitions="300, *"
+            ColumnSpacing="0"
+            RowDefinitions="*">
+            <StackLayout>
+                <!-- Request sample type-->
+                <Label
+                    Text="REQUEST SAMPLE TYPE"
+                    FontAttributes="Bold"
+                    Padding="8"
+                    VerticalTextAlignment="Center"/>
+                <Picker
+                    x:DataType="{x:Null}"
+                    ItemsSource="{Binding RequestProcessAssayList}"
+                    SelectedItem="{Binding SelectedRequestProcessAssay}"
+                    ItemDisplayBinding="{Binding RequestCodeSampleType}"
+                    BackgroundColor="White"
+                    Title="Select request sample type">
+                    <Picker.Behaviors>
+                        <prism:EventToCommandBehavior
+                            EventName="SelectedIndexChanged"
+                            Command="{Binding RefreshSampleListCommand}"/>
+                    </Picker.Behaviors>
+                </Picker>
+                <!-- Sample selector-->
+                <Label
+                    Text="SAMPLE SELECTOR"
+                    FontAttributes="Bold"
+                    Padding="8"
+                    VerticalTextAlignment="Center"/>
+                <Grid
+                    ColumnDefinitions="50, 50, *, 50"
+                    RowDefinitions="60"
+                    ColumnSpacing="0"
+                    BackgroundColor="White">
+                    <ImageButton
+                        Grid.Column="0"
+                        Source="list_48.png"
+                        Padding="8"
+                        Command="{Binding SelectSampleCommand}"
+                        BackgroundColor="White"
+                        Margin="0"/>
+                    <ImageButton
+                        Grid.Column="1"
+                        Source="back_48px.png"
+                        Padding="8"
+                        Command="{Binding PreviousSampleCommand}"
+                        BackgroundColor="White"/>
+                    <Label
+                        Grid.Column="2"
+                        Text="{Binding SelectedSelectableSample.Item.composite_sample_name}"
+                        VerticalOptions="FillAndExpand"
+                        HorizontalOptions="FillAndExpand"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center"/>
+                    <!--TextColor="{Binding SelectedSelectableSample.Selected, Converter={StaticResource BoolToObjectConverter}}-->
+                    <ImageButton
+                        Grid.Column="3"
+                        Source="next_48px.png"
+                        Padding="8"
+                        Command="{Binding NextSampleCommand}"
+                        BackgroundColor="White"/>
+                </Grid>
+                <!-- Request color legend -->
+                <Label
+                    Text="REQUEST COLOR LEGEND"
+                    FontAttributes="Bold"
+                    Padding="8"
+                    VerticalTextAlignment="Center"/>
+                <ListView
+                    ItemsSource="{Binding ColorLegend}"
+                    SelectionMode="None"
+                    HasUnevenRows="True" 
+                    SeparatorVisibility="None"
+                    HeightRequest="300"
+                    BackgroundColor="White">
+                    <ListView.ItemTemplate>
+                        <DataTemplate
+                            x:DataType="{x:Null}">
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" Padding="4">
+                                    <BoxView BackgroundColor="{Binding Value}" HeightRequest="30" WidthRequest="30"/>
+                                    <Label Text="{Binding Key}" VerticalTextAlignment="Center"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!-- Entry type -->
+                <StackLayout
+                    IsVisible="{Binding RemovingCells, Converter={x:StaticResource InvertedBoolConverter}}">
+                    <Label
+                        Text="CELL TYPE"
+                        FontAttributes="Bold"
+                        Padding="8"
+                        VerticalTextAlignment="Center"/>
+                    <Grid
+                        RowDefinitions="auto, auto" ColumnDefinitions="*, *"
+                        RadioButtonGroup.GroupName="EntryType"
+                        RadioButtonGroup.SelectedValue="{Binding SelectedEntryType}"
+                        BackgroundColor="White">
+                        <RadioButton Content="Entry" Value="{x:Static models:ReadingDataEntry.Entry}" IsChecked="True"/>
+                        <RadioButton Grid.Column="1" Content="Pos" Value="{x:Static models:ReadingDataEntry.Positive}" />
+                        <RadioButton Grid.Row="1" Grid.Column="0" Content="Neg" Value="{x:Static models:ReadingDataEntry.Negative}" />
+                        <RadioButton Grid.Row="1" Grid.Column="1" Content="Buffer" Value="{x:Static models:ReadingDataEntry.Buffer}"/>
+                    </Grid>
+                </StackLayout>
+                <!-- Remove cells -->
+                <Button
+                    Text="Remove"
+                    TextColor="White"
+                    BackgroundColor="Red"
+                    Command="{Binding SetRemovingModeCommand}"
+                    CommandParameter="{StaticResource TrueValue}"
+                    IsVisible="{Binding RemovingCells, Converter={StaticResource InvertedBoolConverter}}"/>
+                <Button
+                    Text="Stop removing"
+                    TextColor="Red"
+                    BackgroundColor="White"
+                    Command="{Binding SetRemovingModeCommand}"
+                    CommandParameter="{StaticResource FalseValue}"
+                    IsVisible="{Binding RemovingCells}"/>
+                <Button
+                    Text="Debug info"
+                    Command="{Binding ShowDebugInfoCommand}"
+                    IsVisible="{Binding ShowDebugInfo}"/>
+            </StackLayout>
+            <StackLayout
+                Grid.Column="1"
+                BackgroundColor="White"
+                Padding="0,16,0,0">
+                <Frame
+                    Padding="4, 4, 4, 0"
+                    CornerRadius="8"
+                    BorderColor="#bbb"
+                    HasShadow="False"
+                    WidthRequest="768"
+                    HeightRequest="518"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <!--<ScrollView Orientation="Horizontal" HorizontalOptions="CenterAndExpand" WidthRequest="612" Margin="0">-->
+                    <CollectionView
+                        ItemsSource="{Binding LocationList}" 
+                        ItemsLayout="VerticalGrid, 12" 
+                        ItemSizingStrategy="MeasureFirstItem" 
+                        WidthRequest="768"
+                        HeightRequest="512"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        BackgroundColor="White">
+                        <!--WidthRequest="612" HeightRequest="416"-->
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate
+                                x:DataType="models:PlateLocation">
+                                <StackLayout
+                                    WidthRequest="64"
+                                    HeightRequest="64"
+                                    Padding="0"
+                                    Margin="0"
+                                    Spacing="0">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding PickCellCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ElisaPlateDistributionPageViewModel}}}" 
+                                            CommandParameter="{Binding .}"/>
+                                    </StackLayout.GestureRecognizers>
+                                    <Frame
+                                        Margin="0"
+                                        WidthRequest="60"
+                                        HeightRequest="60"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        Padding="0"
+                                        BorderColor="#bbb"
+                                        CornerRadius="8"
+                                        HasShadow="False"
+                                        BackgroundColor="{Binding Color}"
+                                        IsClippedToBounds="True">
+                                        <Grid
+                                            RowDefinitions="1*,2*" ColumnDefinitions="3*,2*" RowSpacing="0" ColumnSpacing="0">
+                                            <Label
+                                                Grid.Row="0" Grid.Column="0"
+                                                Text="{Binding PositionTitle}"
+                                                HorizontalTextAlignment="Start"
+                                                VerticalTextAlignment="Center"
+                                                FontSize="16"
+                                                Padding="6,0,0,0"/>
+                                            <Label
+                                                Grid.Row="0" Grid.Column="1"
+                                                Text="{Binding SampleTypeIndicator}"
+                                                HorizontalTextAlignment="Center"
+                                                FontSize="16"/>
+                                            <Grid
+                                                Grid.Row="1" Grid.ColumnSpan="2"
+                                                Padding="0">
+                                                <StackLayout
+                                                    IsVisible="{Binding DataType, Converter={StaticResource IsReadingDataEntryConverter}}"
+                                                    Spacing="0">
+                                                    <Label
+                                                        VerticalOptions="Start"
+                                                        HorizontalTextAlignment="Center"
+                                                        VerticalTextAlignment="Start"
+                                                        Text="{Binding Title}"
+                                                        TextColor="Black"
+                                                        FontSize="12"/>
+                                                    <Label
+                                                        VerticalOptions="Start"
+                                                        HorizontalTextAlignment="Center"
+                                                        VerticalTextAlignment="Start"
+                                                        Text="{Binding Subtitle}"
+                                                        TextColor="Black"
+                                                        FontSize="16"/>
+                                                </StackLayout>
+                                                <Label
+                                                    IsVisible="{Binding DataType, Converter={StaticResource IsNotReadingDataEntryConverter}}"
+                                                    HorizontalOptions="FillAndExpand"
+                                                    VerticalOptions="FillAndExpand"
+                                                    HorizontalTextAlignment="Center"
+                                                    VerticalTextAlignment="Start"
+                                                    Text="{Binding Title}"
+                                                    TextColor="Black"
+                                                    FontSize="{Binding DataType, Converter={StaticResource ReadingDataEntryToFontSizeConverter}}"
+                                                    Padding="0,0,0,0"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Frame>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <!--</ScrollView>-->
+                </Frame>
+            </StackLayout>
+        </Grid>
+        <StackLayout
+            VerticalOptions="FillAndExpand"
+            IsVisible="{Binding IsBusy}"
+            BackgroundColor="#AAFFFFFF">
+            <ActivityIndicator
+                IsRunning="True"
+                VerticalOptions="CenterAndExpand"/>
+        </StackLayout>
+    </Grid>
+</ContentPage>

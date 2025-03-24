@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="launcher_background">#FFFFFF</color>
+    <color name="colorPrimary">#47a941</color>
+    <color name="colorPrimaryDark">#007910</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="ListViewSelected">#ff4081</color>
+    <color name="ListViewHighlighted">@android:color/transparent</color>
+</resources>

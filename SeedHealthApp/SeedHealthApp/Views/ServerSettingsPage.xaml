@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:controls="clr-namespace:SeedHealthApp.Custom.Controls"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.ServerSettingsPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid Padding="8" BackgroundColor="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="3,8,3,5">
+                    <Frame HasShadow="False"
+                            BorderColor="#a6a6a6"
+                            CornerRadius="{OnPlatform Android=4}"
+                            Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                            Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}" />
+                    <Label  BackgroundColor="White" 
+                            HorizontalOptions="Start"
+                            TextColor="#a6a6a6"
+                            Text="Server URL"
+                            Margin="10,-45,0,0"
+                            Padding="4,0"
+                            VerticalOptions="Center" />
+                    <controls:BorderlessEntry Text="{Binding ServerUrl}" 
+                                              VerticalOptions="FillAndExpand"
+                                              FontSize="17"
+                                              Margin="10,0,0,0" IsEnabled="False" />
+                </Grid>
+                
+                <Grid Grid.Row="2" Grid.Column="0" Margin="3,8,3,5">
+                    <Frame HasShadow="False"
+                            BorderColor="#FF4081"
+                            CornerRadius="{OnPlatform Android=4}"
+                            Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                            Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}" />
+                    <Label  BackgroundColor="White" 
+                            HorizontalOptions="Start"
+                            TextColor="#FF4081"
+                            Text="Host (IP or domain)"
+                            Margin="10,-45,0,0"
+                            Padding="4,0"
+                            VerticalOptions="Center" />
+                    <controls:BorderlessEntry Text="{Binding Host}"
+                                              VerticalOptions="FillAndExpand"
+                                              FontSize="17"
+                                              Margin="10,0,0,0" IsEnabled="True" Keyboard="Url" ReturnType="Next">
+                    </controls:BorderlessEntry>
+                </Grid>
+                <Grid Grid.Row="3" Grid.Column="0" Margin="3,8,3,5">
+                    <Label  BackgroundColor="White" 
+                            HorizontalOptions="Start"
+                            TextColor="Black"
+                            Text="Use default port?"
+                            Margin="36, 0,0,0"
+                            Padding="4,0"
+                            VerticalOptions="Center" />
+                    <CheckBox IsChecked="{Binding UseDefaultPort}"/>
+                </Grid>
+                <Grid Grid.Row="4" Grid.Column="0" Margin="3,8,3,5" IsVisible="{Binding UseDefaultPort, Converter={StaticResource InvertedBoolConverter}}">
+                    <Frame HasShadow="False"
+                            BorderColor="#FF4081"
+                            CornerRadius="{OnPlatform Android=4}"
+                            Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                            Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}" />
+                    <Label  BackgroundColor="White" 
+                            HorizontalOptions="Start"
+                            TextColor="#FF4081"
+                            Text="Port"
+                            Margin="10,-45,0,0"
+                            Padding="4,0"
+                            VerticalOptions="Center" />
+                    <controls:BorderlessEntry Text="{Binding Port}" 
+                                              VerticalOptions="FillAndExpand"
+                                              FontSize="17"
+                                              Margin="10,0,0,0" IsEnabled="{Binding UseDefaultPort, Converter={StaticResource InvertedBoolConverter}}"
+                                              Keyboard="Numeric" ReturnType="Next"/>
+                </Grid>
+                <Grid Grid.Row="5" Grid.Column="0" Margin="3,8,3,5">
+                    <Frame HasShadow="False"
+                            BorderColor="#FF4081"
+                            CornerRadius="{OnPlatform Android=4}"
+                            Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                            Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}" />
+                    <Label  BackgroundColor="White" 
+                            HorizontalOptions="Start"
+                            TextColor="#FF4081"
+                            Text="Path"
+                            Margin="10,-45,0,0"
+                            Padding="4,0"
+                            VerticalOptions="Center" />
+                    <controls:BorderlessEntry Text="{Binding Path}" 
+                                              VerticalOptions="FillAndExpand"
+                                              FontSize="17"
+                                              Margin="10,0,0,0" IsEnabled="True" Keyboard="Url"/>
+                </Grid>
+                <Grid Grid.Row="6" Grid.Column="0" Margin="3,8,3,5">
+                    <Frame HasShadow="False"
+                            BorderColor="#FF4081"
+                            CornerRadius="{OnPlatform Android=4}"
+                            Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                            Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}" IsVisible="false"/>
+                    <Label  BackgroundColor="White" 
+                            HorizontalOptions="Start"
+                            TextColor="Black"
+                            Text="Use SSL?"
+                            Padding="4,0"
+                            Margin="36,0,0,0"
+                            VerticalOptions="Center" />
+                    <CheckBox IsChecked="{Binding UseSSL}" />
+                </Grid>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

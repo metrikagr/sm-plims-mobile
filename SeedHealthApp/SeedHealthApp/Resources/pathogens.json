@@ -1,0 +1,226 @@
+[
+  {
+    "agent_id":  146,
+    "agent_name": "Alternaria sp."
+  },
+  {
+    "agent_id":  103,
+    "agent_name": "Alternaria triticina"
+  },
+  {
+    "agent_id":  18,
+    "agent_name": "Aspergillus spp."
+  },
+  {
+    "agent_id":  124,
+    "agent_name": "Bipolaris cynodontis"
+  },
+  {
+    "agent_id":  102,
+    "agent_name": "Bipolaris hawaiiensis"
+  },
+  {
+    "agent_id":  19,
+    "agent_name": "Bipolaris maydis"
+  },
+  {
+    "agent_id":  21,
+    "agent_name": "Bipolaris sorokiniana"
+  },
+  {
+    "agent_id":  86,
+    "agent_name": "Bipolaris spicifera"
+  },
+  {
+    "agent_id":  108,
+    "agent_name": "Bipolaris victoriae"
+  },
+  {
+    "agent_id":  20,
+    "agent_name": "Bipolaris zeicola"
+  },
+  {
+    "agent_id":  104,
+    "agent_name": "Cephalosporium gramineum"
+  },
+  {
+    "agent_id":  125,
+    "agent_name": "Cephalosporium sp."
+  },
+  {
+    "agent_id":  126,
+    "agent_name": "Cladosporium spp."
+  },
+  {
+    "agent_id":  147,
+    "agent_name": "Colletotrichum graminicola"
+  },
+  {
+    "agent_id":  148,
+    "agent_name": "Curvularia lunata (Cochliobolus lunatus)"
+  },
+  {
+    "agent_id":  149,
+    "agent_name": "Curvularia sp."
+  },
+  {
+    "agent_id":  150,
+    "agent_name": "Dilophospora alopecuri"
+  },
+  {
+    "agent_id":  27,
+    "agent_name": "Exserohilum rostratum"
+  },
+  {
+    "agent_id":  129,
+    "agent_name": "Exserohilum turcicum"
+  },
+  {
+    "agent_id":  151,
+    "agent_name": "Fusarium acuminatum"
+  },
+  {
+    "agent_id":  152,
+    "agent_name": "Fusarium anthophilum"
+  },
+  {
+    "agent_id":  153,
+    "agent_name": "Fusarium avenaceum"
+  },
+  {
+    "agent_id":  154,
+    "agent_name": "Fusarium aywerte"
+  },
+  {
+    "agent_id":  155,
+    "agent_name": "Fusarium chlamydosporium"
+  },
+  {
+    "agent_id":  156,
+    "agent_name": "Fusarium compactum"
+  },
+  {
+    "agent_id":  132,
+    "agent_name": "Fusarium crookwellense"
+  },
+  {
+    "agent_id":  28,
+    "agent_name": "Fusarium culmorum"
+  },
+  {
+    "agent_id":  133,
+    "agent_name": "Fusarium dimerum"
+  },
+  {
+    "agent_id":  134,
+    "agent_name": "Fusarium equiseti"
+  },
+  {
+    "agent_id":  157,
+    "agent_name": "Fusarium graminearum"
+  },
+  {
+    "agent_id":  158,
+    "agent_name": "Fusarium longipes"
+  },
+  {
+    "agent_id":  94,
+    "agent_name": "Fusarium nivale"
+  },
+  {
+    "agent_id":  159,
+    "agent_name": "Fusarium nurragi"
+  },
+  {
+    "agent_id":  120,
+    "agent_name": "Fusarium nygamai"
+  },
+  {
+    "agent_id":  95,
+    "agent_name": "Fusarium oxysporum"
+  },
+  {
+    "agent_id":  96,
+    "agent_name": "Fusarium poae"
+  },
+  {
+    "agent_id":  119,
+    "agent_name": "Fusarium proliferatum"
+  },
+  {
+    "agent_id":  97,
+    "agent_name": "Fusarium sambucinum"
+  },
+  {
+    "agent_id":  160,
+    "agent_name": "Fusarium scirpi"
+  },
+  {
+    "agent_id":  137,
+    "agent_name": "Fusarium semitectum"
+  },
+  {
+    "agent_id":  161,
+    "agent_name": "Fusarium solani"
+  },
+  {
+    "agent_id":  138,
+    "agent_name": "Fusarium sporotrichioides"
+  },
+  {
+    "agent_id":  139,
+    "agent_name": "Fusarium subglutinans"
+  },
+  {
+    "agent_id":  140,
+    "agent_name": "Fusarium tricinctum"
+  },
+  {
+    "agent_id":  162,
+    "agent_name": "Fusarium verticilloides"
+  },
+  {
+    "agent_id":  163,
+    "agent_name": "Microdochium dimerum"
+  },
+  {
+    "agent_id":  164,
+    "agent_name": "Microdochium nivale (Monographella nivalis)"
+  },
+  {
+    "agent_id":  142,
+    "agent_name": "Penicillium spp."
+  },
+  {
+    "agent_id":  165,
+    "agent_name": "Phoma spp."
+  },
+  {
+    "agent_id":  144,
+    "agent_name": "Pyrenophora teres (Helmithosporium teres)"
+  },
+  {
+    "agent_id":  166,
+    "agent_name": "Pyrenophora tritici-repentis (Helmithosporium tritici-repentis)"
+  },
+  {
+    "agent_id":  167,
+    "agent_name": "Pyricularia sp."
+  },
+  {
+    "agent_id":  168,
+    "agent_name": "Rynchosporium secalis"
+  },
+  {
+    "agent_id":  169,
+    "agent_name": "Septoria nodorum (Phaeosphaeria nodorum)"
+  },
+  {
+    "agent_id":  170,
+    "agent_name": "Verticillium spp."
+  },
+  {
+    "agent_id":  171,
+    "agent_name": "Zymoseptoria tritici (Mycosphaerella graminicola)"
+  }
+]

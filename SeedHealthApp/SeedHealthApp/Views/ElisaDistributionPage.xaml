@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             xmlns:m="clr-namespace:SeedHealthApp.Models"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:converters="clr-namespace:SeedHealthApp.Custom.Converters"
+             x:Class="SeedHealthApp.Views.ElisaDistributionPage"
+             Title="{Binding Title}" 
+             NavigationPage.HasNavigationBar="False"
+             x:Name="Page">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+            <converters:ReadingDataEntryToFontSizeConverter x:Key="ReadingDataEntryToFontSizeConverter"/>
+            <converters:IsReadingDataEntryConverter x:Key="IsReadingDataEntryConverter"/>
+            <converters:IsNotReadingDataEntryConverter x:Key="IsNotReadingDataEntryConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout Padding="8" Spacing="0">
+                <Frame>
+                    <Grid ColumnDefinitions="*,774,*" RowDefinitions="*">
+                        <!--LEFT-->
+                        <StackLayout Grid.Column="0">
+
+                            <ImageButton Source="left_48" CornerRadius="4" BackgroundColor="White" Padding="8"
+                                         HeightRequest="48" WidthRequest="48" HorizontalOptions="StartAndExpand" 
+                                         Command="{Binding GoBackCommand}" Margin="0,0,0,16"/>
+
+                            <Label Text="Pathogen" FontSize="Subtitle" FontAttributes="Bold" Margin="0,4"/>
+                            <Picker ItemsSource="{Binding PathogenList}" ItemDisplayBinding="{Binding PathogenName}"
+                                    SelectedItem="{Binding SelectedPathogen}" Title="Select sample type">
+                                <Picker.Behaviors>
+                                    <prism:EventToCommandBehavior EventName="SelectedIndexChanged" Command="{Binding PathogenChangedCommand}" />
+                                </Picker.Behaviors>
+                            </Picker>
+                            
+                            <Label Text="Request" FontSize="Subtitle" FontAttributes="Bold" Margin="0,4"/>
+                            <Picker ItemsSource="{Binding SelectedRequestList}" ItemDisplayBinding="{Binding formatted_request_code}"
+                                    SelectedItem="{Binding SelectedRequest}" Title="Select request">
+                                <Picker.Behaviors>
+                                    <prism:EventToCommandBehavior EventName="SelectedIndexChanged" Command="{Binding RefreshSampleTypeListCommand}" />
+                                </Picker.Behaviors>
+                            </Picker>
+
+                            <Label Text="Sample type" FontSize="Subtitle" FontAttributes="Bold" Margin="0,4"/>
+                            <Picker ItemsSource="{Binding SampleTypeList}" ItemDisplayBinding="{Binding sample_type_name}"
+                                    SelectedItem="{Binding SelectedSampleType}" Title="Select sample type">
+                                <Picker.Behaviors>
+                                    <prism:EventToCommandBehavior EventName="SelectedIndexChanged" Command="{Binding LoadSampleMaterialsCommand}" />
+                                </Picker.Behaviors>
+                            </Picker>
+
+                            <StackLayout IsVisible="{Binding CurrentSampleMaterial, Converter={StaticResource IsNotNullConverter}}"
+                                Padding="0" Spacing="0">
+                                <Label Text="Current Material" FontSize="Subtitle" FontAttributes="Bold" Margin="0,4"/>
+                                <Label HorizontalTextAlignment="Start">
+                                    <Label.Text>
+                                        <MultiBinding StringFormat="{}{0} of {1} materials">
+                                            <Binding Path="SampleIndex" />
+                                            <Binding Path="MaterialList.Count" />
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
+                                <Grid RowDefinitions="48" ColumnDefinitions="48,*,48">
+                                    <ImageButton Grid.Row="0" Grid.Column="0" Source="back_48px" BackgroundColor="Transparent" Command="{Binding PreviousSampleCommand}"/>
+                                    <Label Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="14">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0}&#10;Is Located: {1}">
+                                                <Binding Path="CurrentSampleMaterial.Item.composite_sample_name" />
+                                                <Binding Path="CurrentSampleMaterial.Selected" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                    <ImageButton Grid.Row="0" Grid.Column="2" Source="next_48px" BackgroundColor="Transparent" Command="{Binding NextSampleCommand}"/>
+                                </Grid>
+                                
+                                <!--<Label Text="{Binding CurrentSampleMaterial.Item.composite_sample_name}"/>
+                                <Label Text="{Binding CurrentSampleMaterial.Selected, StringFormat='Is Located: {0}'}"/>-->
+                                
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Padding="0">
+                                <CheckBox IsChecked="{Binding AllPathogensIsChecked}"/>
+                                <Label Text="Apply changes to all pathogens" VerticalTextAlignment="Center"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!--PLACA-->
+                        <StackLayout
+                            Grid.Column="1"
+                            Padding="0">
+                            <Frame
+                                Padding="4, 4, 4, 0"
+                                CornerRadius="8"
+                                BorderColor="#bbb"
+                                HasShadow="False"
+                                WidthRequest="768"
+                                HeightRequest="518">
+                                <!--<ScrollView Orientation="Horizontal" HorizontalOptions="CenterAndExpand" WidthRequest="612" Margin="0">-->
+                                <CollectionView
+                                    ItemsSource="{Binding LocationList}" 
+                                    ItemsLayout="VerticalGrid, 12" 
+                                    ItemSizingStrategy="MeasureFirstItem" 
+                                    WidthRequest="768"
+                                    HeightRequest="512"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    BackgroundColor="White">
+                                    <!--WidthRequest="612" HeightRequest="416"-->
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackLayout
+                                                WidthRequest="64"
+                                                HeightRequest="64"
+                                                Padding="0"
+                                                Margin="0"
+                                                Spacing="0">
+                                                <StackLayout.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding PickCellCommand, Source={RelativeSource AncestorType={x:Type vm:ElisaDistributionPageViewModel}}}" 
+                                                                      CommandParameter="{Binding .}"/>
+                                                </StackLayout.GestureRecognizers>
+                                                <Frame
+                                                    Margin="0"
+                                                    WidthRequest="60"
+                                                    HeightRequest="60"
+                                                    HorizontalOptions="Center"
+                                                    VerticalOptions="Center"
+                                                    Padding="0"
+                                                    BorderColor="#bbb"
+                                                    CornerRadius="8"
+                                                    HasShadow="False"
+                                                    BackgroundColor="{Binding Color}"
+                                                    IsClippedToBounds="True">
+                                                    <Grid
+                                                        RowDefinitions="1*,2*" ColumnDefinitions="3*,2*" RowSpacing="0" ColumnSpacing="0">
+                                                        <Label
+                                                            Grid.Row="0" Grid.Column="0"
+                                                            Text="{Binding PositionTitle}"
+                                                            HorizontalTextAlignment="Start"
+                                                            VerticalTextAlignment="Center"
+                                                            FontSize="16"
+                                                            Padding="6,0,0,0"/>
+                                                        <Label
+                                                            Grid.Row="0" Grid.Column="1"
+                                                            Text="{Binding SampleTypeIndicator}"
+                                                            HorizontalTextAlignment="Center"
+                                                            FontSize="16"/>
+                                                        <Grid
+                                                            Grid.Row="1" Grid.ColumnSpan="2"
+                                                            Padding="0">
+                                                            <StackLayout
+                                                                IsVisible="{Binding DataType, Converter={StaticResource IsReadingDataEntryConverter}}"
+                                                                Spacing="0">
+                                                                <Label
+                                                                    VerticalOptions="Start"
+                                                                    HorizontalTextAlignment="Center"
+                                                                    VerticalTextAlignment="Start"
+                                                                    Text="{Binding Title}"
+                                                                    TextColor="Black"
+                                                                    FontSize="12"
+                                                                    />
+                                                                <Label
+                                                                    VerticalOptions="Start"
+                                                                    HorizontalTextAlignment="Center"
+                                                                    VerticalTextAlignment="Start"
+                                                                    Text="{Binding Subtitle}"
+                                                                    TextColor="Black"
+                                                                    FontSize="16"/>
+                                                            </StackLayout>
+                                                            <Label
+                                                                IsVisible="{Binding DataType, Converter={StaticResource IsNotReadingDataEntryConverter}}"
+                                                                HorizontalOptions="FillAndExpand"
+                                                                VerticalOptions="FillAndExpand"
+                                                                HorizontalTextAlignment="Center"
+                                                                VerticalTextAlignment="Start"
+                                                                Text="{Binding Title}"
+                                                                TextColor="Black"
+                                                                FontSize="{Binding DataType, Converter={StaticResource ReadingDataEntryToFontSizeConverter}}"
+                                                                Padding="0,0,0,0"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Frame>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            <!--</ScrollView>-->
+                            </Frame>
+                            <ImageButton Grid.Row="0" Grid.Column="2" Source="trash_48" CornerRadius="4" BackgroundColor="White" 
+                                         HeightRequest="36" WidthRequest="36" HorizontalOptions="CenterAndExpand" Padding="4"
+                                         IsVisible="False"
+                                         Command="{Binding RemoveSupport}"/>
+                        </StackLayout>
+                        
+                        <!--RIGHT-->
+                        <StackLayout Grid.Column="2">
+                            <!-- Plate navigator -->
+                            <Grid RowDefinitions="auto" Padding="0,8" Margin="0" BackgroundColor="White" RowSpacing="0" ColumnSpacing="0">
+                                <Frame HasShadow="False"
+                                   BorderColor="Gray"
+                                   CornerRadius="{OnPlatform Android=4}"
+                                   Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}">
+                                </Frame>
+                                <Label Text="Support" FontAttributes="Bold" FontSize="14"
+                                       HorizontalOptions="Start"
+                                       VerticalOptions="Start"
+                                       VerticalTextAlignment="Center"
+                                       BackgroundColor="White"
+                                       Margin="10,-11,0,0"
+                                       Padding="4,0"/>
+                                <Grid RowDefinitions="48" ColumnDefinitions="48,*,48" Margin="8" >
+                                    <ImageButton Grid.Row="0" Grid.Column="0" Source="back_48px" BackgroundColor="Transparent" Command="{Binding PreviusCommand}"/>
+                                    <Label Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="14">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}Plate&#10;Nro {0}/{1}">
+                                                <Binding Path="SupportOrder" />
+                                                <Binding Path="SupportCount" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                    <ImageButton Grid.Row="0" Grid.Column="2" Source="next_48px" BackgroundColor="Transparent" Command="{Binding NextCommand}"/>
+                                    <!--xct:TouchEffect.NativeAnimation="True"-->
+                                </Grid>
+                            </Grid>
+                            <!-- Clear cells button -->
+                            <StackLayout Orientation="Horizontal">
+                                <Switch IsToggled="{Binding RemovingCells}"/>
+                                <Label Text="Clear cells" VerticalTextAlignment="Center"/>
+                            </StackLayout>
+                            <!-- Entry type -->
+                            <StackLayout
+                                IsVisible="{Binding RemovingCells, Converter={x:StaticResource InvertedBoolConverter}}">
+                                <Label Text="Reading type" FontSize="Subtitle" FontAttributes="Bold"/>
+                                <Grid RowDefinitions="auto,auto" ColumnDefinitions="*,*"
+                                  RadioButtonGroup.GroupName="EntryType" RadioButtonGroup.SelectedValue="{Binding SelectedEntryType}">
+                                    <RadioButton Content="Entry" Value="{x:Static m:ReadingDataEntry.Entry}" IsChecked="True"/>
+                                    <RadioButton Grid.Column="1" Content="Pos" Value="{x:Static m:ReadingDataEntry.Positive}" />
+                                    <RadioButton Grid.Row="1" Grid.Column="0" Content="Neg" Value="{x:Static m:ReadingDataEntry.Negative}" />
+                                    <RadioButton Grid.Row="1" Grid.Column="1" Content="Buffer" Value="{x:Static m:ReadingDataEntry.Buffer}"/>
+                                </Grid>
+                            </StackLayout>
+                            <!-- Request color map -->
+                            <ListView ItemsSource="{Binding ColorList}" SelectionMode="None" HasUnevenRows="True" 
+                                      SeparatorVisibility="None" VerticalOptions="End" BackgroundColor="White">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <StackLayout Orientation="Horizontal" Padding="4">
+                                                <BoxView BackgroundColor="{Binding Value}" HeightRequest="30" WidthRequest="30"/>
+                                                <Label Text="{Binding Key}" VerticalTextAlignment="Center"/>
+                                            </StackLayout>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                            <Button Text="Save distribution" HorizontalOptions="EndAndExpand" VerticalOptions="EndAndExpand"
+                                    BackgroundColor="#ffc107" TextColor="Black" CornerRadius="4" Command="{Binding SaveDistributionCommand}" />
+                        </StackLayout>
+                    </Grid>
+                </Frame>
+                <StackLayout Grid.Row="2" 
+                    IsVisible="{Binding ShowDebugInfo}"
+                    Padding="0"
+                    Orientation="Horizontal">
+                    <Button Text="debug info" Command="{Binding ShowDebugInfoCommand}" Margin="0"/>
+                </StackLayout>
+            </StackLayout>
+            <StackLayout
+                VerticalOptions="FillAndExpand"
+                IsVisible="{Binding IsBusy}"
+                BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

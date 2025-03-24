@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:prism="http://prismlibrary.com" 
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             xmlns:m="clr-namespace:SeedHealthApp.Models"
+             x:DataType="vm:RequestsPageViewModel"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.TabletRequestsPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <xct:EqualConverter x:Key="EqualConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid RowDefinitions="*, auto" RowSpacing="0">
+            <StackLayout Padding="0">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="8,8,0,0" />
+                <StackLayout
+                    BindableLayout.ItemsSource="{Binding NavigationUriList}"
+                    Orientation="Horizontal"
+                    BindableLayout.EmptyView="No breadcums items"
+                    Padding="8,0,0,0">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="m:BreadcumItem">
+                            <StackLayout Padding="0">
+                                <Label Text=" > " IsVisible="{Binding IsFirst, Converter={StaticResource InvertedBoolConverter}}"/>
+                                <Label Text="{Binding Title}" TextColor="#0073b7"/>
+                            </StackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+
+                <StackLayout Padding="16, 8">
+                    <Grid>
+                        <ListView
+                                        ItemsSource="{Binding RequestList}" SelectedItem="{Binding SelectedRequest}" 
+                                        HasUnevenRows="True" SeparatorVisibility="None" 
+                                        IsPullToRefreshEnabled="True"
+                                        IsRefreshing="{Binding IsRefreshing}"
+                                        RefreshCommand="{Binding RefreshCommand}">
+                            <ListView.Behaviors>
+                                <prism:EventToCommandBehavior Command="{Binding GetEssaysCommand}" EventName="ItemTapped" />
+                            </ListView.Behaviors>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell x:DataType="m:Request">
+                                        <Frame BackgroundColor="#F8F8F8" HasShadow="True" Margin="4" >
+                                            <Grid RowSpacing="0" ColumnSpacing="4" RowDefinitions="auto" ColumnDefinitions="1*,1*,1*,1*,1*,1*">
+                                                <Label Grid.Row="0" Grid.Column="0" Text="Request Code : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding request_code}" FontSize="14"
+                                                                TextColor="#0073b7"
+                                                                FontAttributes="Bold"/>
+                                                <Label Grid.Row="1" Grid.Column="0" Text="Crop : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding crop_name}" FontSize="14" TextColor="#888888" />
+                                                <Label Grid.Row="0" Grid.Column="2" Text="Date Created : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="0" Grid.Column="3" Text="{Binding registered_date}" FontSize="14" TextColor="#888888" />
+                                                <Label Grid.Row="1" Grid.Column="2" Text="Seed distribution : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="1" Grid.Column="3" Text="{Binding distribution_name}" FontSize="14" TextColor="#888888" />
+                                                <Label Grid.Row="1" Grid.Column="4" Text="Status : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="1" Grid.Column="5" Text="{Binding status_name}" FontSize="14" TextColor="#888888" />
+                                            </Grid>
+                                        </Frame>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="{Binding IsListEmpty}">
+                            <Image Source="empty_box_64.png" HorizontalOptions="CenterAndExpand" />
+                            <Label Text="Request list is empty" HorizontalOptions="CenterAndExpand"
+                                            TextColor="#777" FontSize="Large" FontAttributes="Bold"/>
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </StackLayout>
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+            <StackLayout Grid.Row="1" Padding="0" IsVisible="{Binding IsOffline}">
+                <Label Style="{StaticResource Key=ConnectivityLabelStyle }"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

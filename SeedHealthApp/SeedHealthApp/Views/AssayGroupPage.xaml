@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com" 
+             xmlns:controls="clr-namespace:SeedHealthApp.Custom.Controls"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             xmlns:m="clr-namespace:SeedHealthApp.Models"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.AssayGroupPage"
+             x:DataType="vm:AssayGroupPageViewModel"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddRequestProcessAssaySampleTypeCommmand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid RowDefinitions="*, auto" RowSpacing="0">
+            <!--<ScrollView>-->
+            <StackLayout Padding="0" BackgroundColor="White" Spacing="0">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="8,4" FontSize="16"/>
+                <Label Text="Assay details" BackgroundColor="#eee" TextColor="Gray" Padding="16, 4" FontSize="16" FontAttributes="Bold" IsVisible="False"/>
+                <Grid ColumnDefinitions="1*, 1*" RowDefinitions="auto,auto"
+                          ColumnSpacing="8" RowSpacing="0" Padding="8, 8"  Margin="0" IsVisible="false">
+                    <controls:EntryOutlined Text="{Binding Request.request_code}" Placeholder="Request code"
+                                                BorderColor="#a6a6a6" PlaceholderColor="#a6a6a6" TextColor="#a6a6a6" IsEnabled="False"/>
+                    <controls:EntryOutlined Grid.Row="0" Grid.Column="1" Text="{Binding Essay.status}" Placeholder="Status" 
+                                                BorderColor="#a6a6a6" PlaceholderColor="#a6a6a6" TextColor="#a6a6a6" IsEnabled="False"/>
+
+                    <controls:EntryOutlined Grid.Row="1" Grid.Column="0" Text="{Binding Request.crop_name}" Placeholder="Crop" 
+                                                BorderColor="#a6a6a6" PlaceholderColor="#a6a6a6" TextColor="#a6a6a6" IsEnabled="False"/>
+                    <controls:EntryOutlined Grid.Row="1" Grid.Column="1" Text="{Binding Request.distribution_name}" Placeholder="Seed distribution" 
+                                                BorderColor="#a6a6a6" PlaceholderColor="#a6a6a6" TextColor="#a6a6a6" IsEnabled="False"/>
+                </Grid>
+                <Label Text="Assays by sample type" BackgroundColor="#eee" TextColor="Gray" Padding="16, 4" FontSize="16" FontAttributes="Bold"/>
+                <xct:TabView TabStripPlacement="Top" TabStripBackgroundColor="WhiteSmoke" TabStripHeight="60" TabIndicatorColor="#FF4081" TabContentBackgroundColor="White"
+                             IsSwipeEnabled="False">
+                    <xct:TabViewItem Text="Process" TextColor="Gray" TextColorSelected="#FF4081" FontSize="12">
+                        <ListView
+                            ItemsSource="{Binding ActiveSampleList}"
+                            HasUnevenRows="True"
+                            SelectedItem="{Binding SelectedActiveAssaySampleType}"
+                            IsPullToRefreshEnabled="True"
+                            RefreshCommand="{Binding RefreshCommand}"
+                            IsRefreshing="{Binding IsRefreshing}">
+                            <ListView.Behaviors>
+                                <prism:EventToCommandBehavior EventName="ItemTapped" Command="{Binding NavigateToRequestAssaySampleTypeCommand}"/>
+                            </ListView.Behaviors>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell x:DataType="m:SampleType">
+                                        <Frame BackgroundColor="#F8F8F8" HasShadow="True" Margin="8">
+                                            <Grid RowSpacing="0" ColumnSpacing="4" RowDefinitions="auto, auto, auto, auto, auto, auto" ColumnDefinitions="1*,1*" >
+                                                <Label Grid.Row="0" Grid.Column="0" Text="Sample type : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding sample_type_name}" FontSize="14" TextColor="#888888"/>
+                                                <Label Grid.Row="1" Grid.Column="0" Text="Status : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding status_name}" FontSize="14" TextColor="#888888" />
+
+                                                <Label Grid.Row="2" Grid.Column="0" Text="Start date : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding start_date}" FontSize="14" TextColor="#888888" />
+                                                <Label Grid.Row="3" Grid.Column="0" Text="Finish date : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="3" Grid.Column="1" Text="{Binding finish_date}" FontSize="14" TextColor="#888888" />
+
+                                                <Label Grid.Row="4" Grid.Column="0" Text="Repetitions : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="4" Grid.Column="1" Text="{Binding activity_qty}" FontSize="14" TextColor="#888888"/>
+                                                <Label Grid.Row="5" Grid.Column="0" Text="Container type : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                                <Label Grid.Row="5" Grid.Column="1" Text="{Binding type_name}" FontSize="14" TextColor="#888888" />
+
+                                            </Grid>
+                                        </Frame>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </xct:TabViewItem>
+
+                    <xct:TabViewItem Text="Reprocess" TextColor="Gray" TextColorSelected="#FF4081" FontSize="12">
+                        
+                    </xct:TabViewItem>
+                </xct:TabView>
+                
+
+                <!--<Grid ColumnDefinitions="1*" RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto" Padding="8, 0" 
+                          ColumnSpacing="8" RowSpacing="0" Margin="0,0,0,8">
+                    <controls:EntryOutlined Grid.Row="0" Grid.Column="0" Text="{Binding Request.request_code}" Placeholder="Request code"
+                                                BorderColor="#a6a6a6" PlaceholderColor="#a6a6a6" TextColor="#a6a6a6" IsEnabled="False"/>
+                    <controls:EntryOutlined Grid.Row="1" Grid.Column="0" Text="{Binding Request.crop_name}" Placeholder="Crop" 
+                                                BorderColor="#a6a6a6" PlaceholderColor="#a6a6a6" TextColor="#a6a6a6" IsEnabled="False"/>
+                    <controls:EntryOutlined Grid.Row="2" Grid.Column="0" Text="{Binding Request.distribution_name}" Placeholder="Seed distribution" 
+                                                BorderColor="#a6a6a6" PlaceholderColor="#a6a6a6" TextColor="#a6a6a6" IsEnabled="False"/>
+                    <controls:EntryOutlined Grid.Row="3" Grid.Column="0" Text="{Binding Essay.status}" Placeholder="Status" 
+                                                BorderColor="#a6a6a6" PlaceholderColor="#a6a6a6" TextColor="#a6a6a6" IsEnabled="False"/>
+                </Grid>-->
+            </StackLayout>
+            <!--</ScrollView>-->
+            
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+            
+            <StackLayout Grid.Row="1" Padding="0" IsVisible="{Binding IsOffline}">
+                <Label Style="{StaticResource Key=ConnectivityLabelStyle }"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

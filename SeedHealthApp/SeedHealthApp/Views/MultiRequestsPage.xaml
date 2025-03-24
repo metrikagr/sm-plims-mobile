@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:m="clr-namespace:SeedHealthApp.Models"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             x:DataType="vm:MultiRequestsPageViewModel"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.MultiRequestsPage"
+             Title="Multi requests">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid RowDefinitions="*, auto" RowSpacing="0">
+        <StackLayout Padding="0">
+            <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="8,8,0,0" />
+            <StackLayout
+                    BindableLayout.ItemsSource="{Binding NavigationUriList}"
+                    Orientation="Horizontal"
+                    BindableLayout.EmptyView="No breadcums items"
+                    Padding="8,0,0,0">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="m:BreadcumItem">
+                        <StackLayout Padding="0">
+                            <Label Text=" > " IsVisible="{Binding IsFirst, Converter={StaticResource InvertedBoolConverter}}"/>
+                            <Label Text="{Binding Title}" TextColor="#0073b7"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+            <Grid RowDefinitions="*" Padding="16,8">
+                <ListView
+                    ItemsSource="{Binding MultiRequestList}"
+                    SelectionMode="Single"
+                    HasUnevenRows="True" SeparatorVisibility="None" 
+                    IsPullToRefreshEnabled="True"
+                    SelectedItem="{Binding SelectedMultiRequest}"
+                    RefreshCommand="{Binding RefreshMultiRequestCommand}"
+                    IsRefreshing="{Binding IsMultiRequestListRefreshing}">
+                    <ListView.Behaviors>
+                        <prism:EventToCommandBehavior Command="{Binding MultirequestSelectedCommand}" EventName="ItemTapped" />
+                    </ListView.Behaviors>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell x:DataType="m:MultiRequest">
+                                <Frame BackgroundColor="#F8F8F8" HasShadow="True" Margin="4" >
+                                    <Grid RowSpacing="0" ColumnSpacing="4" RowDefinitions="auto" ColumnDefinitions="1*,1*,1*,1*">
+                                        <Label Grid.Row="0" Grid.Column="0" Text="Request codes : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding request_codes}" FontSize="14" TextColor="#888888" />
+
+                                        <Label Grid.Row="0" Grid.Column="2" Text="Event code : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="0" Grid.Column="3" Text="{Binding event_code}" FontSize="14" TextColor="#888888" />
+
+                                        <Label Grid.Row="1" Grid.Column="0" Text="Crops : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding crop_names}" FontSize="14" TextColor="#888888" />
+                                        <Label Grid.Row="1" Grid.Column="2" Text="Status : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="1" Grid.Column="3" Text="{Binding status_name}" FontSize="14" TextColor="#888888" />
+
+                                        <Label Grid.Row="2" Grid.Column="0" Text="Seed distributions : " FontSize="14" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding distribution_names}" FontSize="14" TextColor="#888888" />
+                                    </Grid>
+                                </Frame>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Frame
+                    HeightRequest="48"
+                    CornerRadius="24"
+                    HorizontalOptions="End"
+                    VerticalOptions="End"
+                    BackgroundColor="#00a65a"
+                    Padding="0"
+                    HasShadow="true"
+                    xct:TouchEffect.NativeAnimation="True">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding CreateMultiRequestCommand}"/>
+                    </Frame.GestureRecognizers>
+                    <Grid RowDefinitions="48" ColumnDefinitions="auto,auto" ColumnSpacing="0">
+                        <Image Grid.Column="0" Source="plus_math_white_24" WidthRequest="24" HeightRequest="24" 
+                                                       VerticalOptions="Center"
+                                                       Margin="12,0"/>
+                        <Label Grid.Column="1" Text="CREATE" Padding="0,0,20,0" VerticalOptions="CenterAndExpand"
+                                                       TextColor="White" VerticalTextAlignment="End" FontAttributes="Bold"/>
+                    </Grid>
+                </Frame>
+
+                <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="{Binding IsMultiRequestListEmpty}">
+                    <Image
+                        Source="empty_box_64.png"
+                        HorizontalOptions="CenterAndExpand" />
+                    <Label
+                        Text="Multi request list is empty"
+                        HorizontalOptions="CenterAndExpand"
+                        TextColor="#777"
+                        FontSize="Large"
+                        FontAttributes="Bold"/>
+                </StackLayout>
+            </Grid>
+        </StackLayout>
+        <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+            <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+        </StackLayout>
+        <StackLayout Grid.Row="1" Padding="0" IsVisible="{Binding IsOffline}">
+            <Label Style="{StaticResource Key=ConnectivityLabelStyle }"/>
+        </StackLayout>
+    </Grid>
+</ContentPage>

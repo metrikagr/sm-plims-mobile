@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Frame
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SeedHealthApp.Dialogs.SamplePickerDialog"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:dialogs="clr-namespace:SeedHealthApp.Dialogs"
+    x:DataType="dialogs:SamplePickerDialogViewModel"
+    prism:DialogLayout.CloseOnBackgroundTapped="False"
+    prism:DialogLayout.RelativeWidthRequest="0.9"
+    prism:DialogLayout.RelativeHeightRequest="0.9"
+    CornerRadius="4"
+    HasShadow="false"
+    Padding="0">
+    <Frame.Content>
+        <StackLayout>
+            <StackLayout Spacing="8" HorizontalOptions="FillAndExpand" Padding="16">
+                <Label
+                    Text="Select sample"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Start" 
+                    HeightRequest="40"
+                    FontSize="18"
+                    TextColor="#333"
+                    LineBreakMode="TailTruncation"/>
+                <!--<SearchBar
+                    Text="{Binding SearchText}"
+                    SearchCommand="{Binding FilterPathogenCommand}"
+                    IsVisible="{Binding IsSearchVisible}">
+                    <SearchBar.Behaviors>
+                        <prism:EventToCommandBehavior EventName="TextChanged" Command="{Binding TextChangedCommand}"/>
+                    </SearchBar.Behaviors>
+                </SearchBar>-->
+                    
+                <ListView
+                    ItemsSource="{Binding SelectableSampleList}"
+                    SelectedItem="{Binding SelectedSelectableSample}"
+                    HasUnevenRows="True"
+                    SeparatorVisibility="None"
+                    Grid.Row="3">
+                    <ListView.Behaviors>
+                        <prism:EventToCommandBehavior
+                            EventName="ItemSelected"
+                            Command="{Binding AcceptCommand}"/>
+                    </ListView.Behaviors>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell
+                                x:DataType="{x:Null}">
+                                <Grid
+                                    ColumnDefinitions="*, 60"
+                                    RowDefinitions="36">
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="{Binding Item.composite_sample_name}"
+                                        FontSize="16"
+                                        VerticalOptions="CenterAndExpand"
+                                        Padding="8, 0"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                
+                <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft" HeightRequest="50">
+                    <Button Text="Cancel" Command="{Binding CloseCommand}" BackgroundColor="White" TextColor="Red"/>
+                    <!--<Button Text="Confirm" Command="{Binding AcceptCommand}" BackgroundColor="White" TextColor="Green"/>-->
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </Frame.Content>
+</Frame>

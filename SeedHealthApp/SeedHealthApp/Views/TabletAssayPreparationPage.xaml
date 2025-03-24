@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SeedHealthApp.Custom.Controls"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             x:DataType="vm:AssayPreparationPageViewModel"
+             x:Class="SeedHealthApp.Views.TabletAssayPreparationPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid RowDefinitions="*, auto, auto">
+            <!--<ScrollView>-->
+            <Grid Padding="8" BackgroundColor="White" RowDefinitions="auto, *">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8" 
+                           Grid.Row="0" Grid.ColumnSpan="2"/>
+
+                <Grid Grid.Row="1" Grid.ColumnSpan="2" Padding="0, 0" RowSpacing="0"
+                      ColumnDefinitions="100, *, 100, 150" RowDefinitions="auto, *" >
+                    <ImageButton Grid.Column="0" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousSampleListPageCommand}"/>
+                    <Label Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="Title">
+                        <Label.Text>
+                            <MultiBinding StringFormat="{}Sample from {0} to {1} of {2}">
+                                <Binding Path="SampleOrderStart" />
+                                <Binding Path="SampleOrderEnd" />
+                                <Binding Path="SamplesTotalCount" />
+                            </MultiBinding>
+                        </Label.Text>
+                    </Label>
+                    <ImageButton Grid.Column="2" Source="next_48px" BackgroundColor="White" Command="{Binding NextSampleListPageCommand}"/>
+                    <Button Grid.Column="3" Text="Save" HorizontalOptions="FillAndExpand" Command="{Binding SaveTestedSeedsCountCommand}"
+                                    BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>
+
+                    <Frame Grid.Row="1" Grid.ColumnSpan="4" Margin="0, 8, 0, 8" >
+                        <StackLayout Spacing="0">
+                            
+                            <Grid x:Name="datagridHeader" RowDefinitions="auto" Margin="0" ColumnSpacing="4">
+                                <!--<Label Grid.Column="0" Text="Sample name" FontSize="14" VerticalOptions="CenterAndExpand" />
+                                <Label Grid.Column="1" Text="Rep 1" />
+                                <Label Grid.Column="2" Text="Rep 2" />
+                                <Label Grid.Column="3" Text="Rep 3" />
+                                <Label Grid.Column="4" Text="Rep 4" />
+                                <Label Grid.Column="5" Text="Rep 5" />
+                                <Label Grid.Column="6" Text="Rep 6" />
+                                <Label Grid.Column="7" Text="Rep 7" />
+                                <Label Grid.Column="8" Text="Rep 8" />
+                                <Label Grid.Column="9" Text="Rep 9" />
+                                <Label Grid.Column="10" Text="Rep 10" />-->
+                            </Grid>
+                            <CollectionView x:Name="datagrid" ItemsSource="{Binding SampleWithActivitiesList}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="{x:Null}">
+                                        <Grid RowDefinitions="auto" ColumnDefinitions="auto, 1*, 1*, 1*, 1*, 1*, 1*, 0, 0, 0, 0" Margin="0" ColumnSpacing="4">
+                                            <Label Grid.Column="0" Text="{Binding composite_sample_name}" FontSize="14" VerticalOptions="CenterAndExpand" />
+                                            <Entry Grid.Column="1" Text="{Binding tested_seeds_counts[0].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="2" Text="{Binding tested_seeds_counts[1].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="3" Text="{Binding tested_seeds_counts[2].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="4" Text="{Binding tested_seeds_counts[3].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="5" Text="{Binding tested_seeds_counts[4].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="6" Text="{Binding tested_seeds_counts[5].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="7" Text="{Binding tested_seeds_counts[6].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="8" Text="{Binding tested_seeds_counts[7].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="9" Text="{Binding tested_seeds_counts[8].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                            <Entry Grid.Column="10" Text="{Binding tested_seeds_counts[9].DisplayValue}" Keyboard="Numeric" MaxLength="3" ReturnType="Next"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <StackLayout Orientation="Horizontal">
+                                <Grid ColumnDefinitions="150, auto, auto, auto" RowDefinitions="auto">
+                                    <!--<Label Grid.Column="0" Text="Seed count" VerticalTextAlignment="Center"/>-->
+                                    <!--<Entry Grid.Column="1" Text="{Binding BatchSeedsCount}" Keyboard="Numeric" MaxLength="3" ReturnType="Next" HorizontalTextAlignment="Center"/>-->
+
+                                    <Grid Grid.Column="0" Margin="3,8,3,5" RowDefinitions="auto">
+                                        <Frame HasShadow="False"
+                                                BorderColor="#FF4081"
+                                                CornerRadius="{OnPlatform Android=4}"
+                                                Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                                                Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}" />
+                                        <controls:BorderlessEntry  Text="{Binding BatchSeedsCount}"
+                                                FontSize="17"
+                                                Margin="10,0,4,0"
+                                                Keyboard="Numeric" MaxLength="3"
+                                                ReturnType="Next" HorizontalTextAlignment="End" />
+                                        <Label BackgroundColor="White" 
+                                                HorizontalOptions="Start"
+                                                TextColor="Black"
+                                                Text="Seeds count"
+                                                Margin="10,-45,0,0"
+                                                Padding="4,0"
+                                                VerticalOptions="Center" 
+                                               LineBreakMode="TailTruncation"
+                                               />
+                                    </Grid>
+
+                                    <Button Grid.Column="1" Text="Fill seeds counts" Style="{StaticResource Key=BlueButtonStyle}" Command="{Binding FillAllSeedsCountCommand}"/>
+                                    <CheckBox Grid.Column="2" IsChecked="{Binding OnlyEmptyCells}"/>
+                                    <Label Grid.Column="3" Text="Only empty cells" VerticalOptions="Center"/>
+                                </Grid>
+                                <!--<Button Text="Save" HorizontalOptions="EndAndExpand" Command="{Binding SaveTestedSeedsCountCommand}"
+                                    BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>-->
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+
+
+                </Grid>
+
+            </Grid>
+            <!--</ScrollView>-->
+
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+            <StackLayout Grid.Row="1" Padding="0" IsVisible="{Binding IsOffline}">
+                <Label Style="{StaticResource Key=ConnectivityLabelStyle }"/>
+            </StackLayout>
+            <StackLayout Grid.Row="2"
+                IsVisible="{Binding ShowDebugInfo}">
+                <Button Text="debug info" Command="{Binding ShowDebugInfoCommand}"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

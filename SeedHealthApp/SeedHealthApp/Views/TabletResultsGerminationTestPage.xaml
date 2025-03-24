@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:controls="clr-namespace:SeedHealthApp.Custom.Controls"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             xmlns:m="clr-namespace:SeedHealthApp.Models"
+             x:DataType="vm:ResultsGerminationTestPageViewModel"
+             x:Class="SeedHealthApp.Views.TabletResultsGerminationTestPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
+        <ResourceDictionary>
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <xct:EqualConverter x:Key="EqualConverter" />
+        </ResourceDictionary>
+        <Style x:Key="SeedsCountFrameStyle" TargetType="Frame">
+            <Setter Property="HasShadow">False</Setter>
+            <Setter Property="CornerRadius">
+                <OnPlatform x:TypeArguments="x:Double">
+                    <On Platform="Android">4</On>
+                </OnPlatform>
+            </Setter>
+            <Setter Property="Padding">
+                <OnPlatform x:TypeArguments="Thickness">
+                    <On Platform="Android">5, 0, 5, 0</On>
+                    <On Platform="iOS">8, 0, 8, 0</On>
+                </OnPlatform>
+            </Setter>
+            <Setter Property="Margin">0</Setter>
+        </Style>
+        <Style x:Key="SeedsCountEntryStyle" TargetType="Entry">
+            <Setter Property="Margin">10, 0, 4, 0</Setter>
+            <Setter Property="FontSize">17</Setter>
+            <Setter Property="Keyboard">Numeric</Setter>
+            <Setter Property="MaxLength">3</Setter>
+            <Setter Property="ReturnType">Next</Setter>
+            <Setter Property="HorizontalTextAlignment">End</Setter>
+        </Style>
+        <Style x:Key="SeedsCountLabelStyle" TargetType="Label">
+            <Setter Property="BackgroundColor">White</Setter>
+            <Setter Property="HorizontalOptions">Start</Setter>
+            <Setter Property="TextColor">Black</Setter>
+            <Setter Property="Margin">10, -45, 0, 0</Setter>
+            <Setter Property="Padding">4, 0</Setter>
+            <Setter Property="VerticalOptions">Center</Setter>
+            <Setter Property="LineBreakMode">TailTruncation</Setter>
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout Padding="8">
+
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8"/>
+
+                <!-- NAVIGATION BUTTONS -->
+                <Grid ColumnDefinitions="80,*,80,80,*,80" RowDefinitions="54">
+                    <ImageButton Grid.Column="0" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousMaterialCommand}"/>
+                    <Label Grid.Column="1" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" FontSize="18">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text=" Sample "/>
+                                <Span Text="{Binding SelectedMaterial.composite_sample_name}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <ImageButton Grid.Column="2" Source="next_48px" BackgroundColor="White" Command="{Binding NextMaterialCommand}"/>
+
+                    <ImageButton Grid.Column="3" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousActivityCommand}"/>
+                    <Label Grid.Column="4" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="18">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text=" Repetition "/>
+                                <Span Text="{Binding SelectedActivity.activity_name}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <ImageButton Grid.Column="5" Source="next_48px" BackgroundColor="White" Command="{Binding NextActivityCommand}"/>
+
+                    <Button Grid.Column="6" Text="Save" HorizontalOptions="FillAndExpand" Command="{Binding SaveEvaluationCommmand}"
+                                        BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>
+                </Grid>
+
+                <StackLayout
+                    Orientation="Horizontal"
+                    Padding="8,0">
+                    <Label
+                        Text="{Binding SeedsMaxCount, StringFormat='Tested seeds count : {0}'}"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalTextAlignment="Center"
+                        FontSize="17"/>
+
+                    <CheckBox IsChecked="{Binding MarkedToReprocess}" />
+                    <Label
+                                Text="Marked to reprocess"
+                                VerticalTextAlignment="Center"/>
+                </StackLayout>
+
+                <Grid BackgroundColor="White" 
+                    VerticalOptions="FillAndExpand"
+                    HorizontalOptions="FillAndExpand">
+                    <!-- GERMINATION -->
+                    <StackLayout
+                        Padding="16"
+                        IsVisible="{Binding IsSubProcess2}">
+                        <Grid Margin="3,8,3,5" RowDefinitions="auto">
+                            <Frame
+                                BorderColor="{Binding NormalSeedsCell.BackgroundColor}"
+                                Style="{StaticResource SeedsCountFrameStyle}"/>
+                            <controls:BorderlessEntry
+                                Text="{Binding NormalSeedsCell.SeedsCount}"
+                                IsEnabled="{Binding NormalSeedsCell.Enabled}"
+                                SelectAllOnFocus="True"
+                                Style="{StaticResource SeedsCountEntryStyle}">
+                                <Entry.Behaviors>
+                                    <prism:EventToCommandBehavior
+                                        EventName="TextChanged"
+                                        Command="{Binding UpdateNotGerminatedCellCommand}"/>
+                                </Entry.Behaviors>
+                            </controls:BorderlessEntry>
+                            <Label
+                                Text="{Binding NormalSeedsCell.PathogenName}"
+                                Style="{StaticResource SeedsCountLabelStyle}"/>
+                        </Grid>
+                        <Grid Margin="3,8,3,5" RowDefinitions="auto">
+                            <Frame
+                                BorderColor="{Binding AbnormalSeedsCell.BackgroundColor}"
+                                Style="{StaticResource SeedsCountFrameStyle}"/>
+                            <controls:BorderlessEntry
+                                Text="{Binding AbnormalSeedsCell.SeedsCount}"
+                                IsEnabled="{Binding AbnormalSeedsCell.Enabled}"
+                                SelectAllOnFocus="True"
+                                Style="{StaticResource SeedsCountEntryStyle}">
+                                <Entry.Behaviors>
+                                    <prism:EventToCommandBehavior
+                                        EventName="TextChanged"
+                                        Command="{Binding UpdateNotGerminatedCellCommand}"/>
+                                </Entry.Behaviors>
+                            </controls:BorderlessEntry>
+                            <Label
+                                Text="{Binding AbnormalSeedsCell.PathogenName}"
+                                Style="{StaticResource SeedsCountLabelStyle}"/>
+                        </Grid>
+                        <Grid Margin="3,8,3,5" RowDefinitions="auto">
+                            <Frame
+                                BorderColor="{Binding NotGerminatedSeedsCell.BackgroundColor}"
+                                Style="{StaticResource SeedsCountFrameStyle}"/>
+                            <controls:BorderlessEntry
+                                Text="{Binding NotGerminatedSeedsCell.SeedsCount}"
+                                IsEnabled="{Binding NotGerminatedSeedsCell.Enabled}"
+                                SelectAllOnFocus="True"
+                                Style="{StaticResource SeedsCountEntryStyle}">
+                                <!--<Entry.Behaviors>
+                                    <xct:NumericValidationBehavior
+                                        InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                        MinimumValue="0"
+                                        MaximumValue="{Binding NotGerminatedSeedsCell.SeedsMaxCount}"/>
+                                </Entry.Behaviors>-->
+                            </controls:BorderlessEntry>
+                            <Label
+                                Text="{Binding NotGerminatedSeedsCell.PathogenName}"
+                                Style="{StaticResource SeedsCountLabelStyle}"/>
+                        </Grid>
+                        <!--<CollectionView ItemsSource="{Binding CurrentResults}" SelectionMode="None" ItemsLayout="VerticalGrid, 1">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="m:ResultCell">
+                                    <StackLayout>
+                                        <Grid Margin="3,8,3,5" RowDefinitions="auto">
+                                            <Frame HasShadow="False"
+                                                BorderColor="{Binding BackgroundColor}"
+                                                CornerRadius="{OnPlatform Android=4}"
+                                                Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                                                Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}" />
+                                            <controls:BorderlessEntry
+                                                Text="{Binding SeedsCount}"
+                                                FontSize="17"
+                                                Margin="10,0,4,0"
+                                                Keyboard="Numeric"
+                                                MaxLength="3"
+                                                ReturnType="Next"
+                                                HorizontalTextAlignment="End"
+                                                IsEnabled="{Binding Enabled}"
+                                                SelectAllOnFocus="True">
+                                                <Entry.Behaviors>
+                                                    <xct:NumericValidationBehavior
+                                                        InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                        MinimumValue="0"
+                                                        MaximumValue="{Binding SeedsMaxCount}"/>
+                                                </Entry.Behaviors>
+                                            </controls:BorderlessEntry>
+                                            <Label BackgroundColor="White" 
+                                                HorizontalOptions="Start"
+                                                TextColor="Black"
+                                                Text="{Binding PathogenName}"
+                                                Margin="10,-45,0,0"
+                                                Padding="4,0"
+                                                VerticalOptions="Center"
+                                                LineBreakMode="TailTruncation"/>
+                                        </Grid>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>-->
+                    </StackLayout>
+                    <!-- SYMPTOMPS -->
+                    <StackLayout
+                        Padding="16"
+                        IsVisible="{Binding IsSubProcess2, Converter={StaticResource InvertedBoolConverter}}">
+                        <Grid Margin="3,8,3,5" RowDefinitions="auto">
+                            <Frame
+                                HasShadow="False"
+                                BorderColor="{Binding SymthompSeedsCountCell.BackgroundColor}"
+                                CornerRadius="{OnPlatform Android=4}"
+                                Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                                Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}">
+                                <controls:BorderlessEntry
+                                    Text="{Binding SymthompSeedsCountCell.SeedsCount}"
+                                    FontSize="17"
+                                    Margin="10,0,4,0"
+                                    Keyboard="Numeric"
+                                    MaxLength="3"
+                                    HorizontalTextAlignment="End"
+                                    ReturnType="Next"
+                                    SelectAllOnFocus="True">
+                                </controls:BorderlessEntry>
+                            </Frame>
+                            <Label
+                                    BackgroundColor="White" 
+                                    HorizontalOptions="Start"
+                                    TextColor="Black"
+                                    Text="{Binding SymthompSeedsCountCell.PathogenName}"
+                                    Margin="10,-10,0,0"
+                                    Padding="4,0"
+                                    VerticalOptions="Start"
+                                    LineBreakMode="TailTruncation"/>
+                        </Grid>
+
+                        <Grid Margin="3,8,3,5" RowDefinitions="auto">
+                            <Frame
+                                HasShadow="False"
+                                BorderColor="{Binding SymptomDescriptionCell.TextBackgroundColor}"
+                                CornerRadius="{OnPlatform Android=4}"
+                                Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                                Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}">
+                                <Editor
+                                    Text="{Binding SymptomDescriptionCell.TextDisplayValue}"
+                                    HeightRequest="200"
+                                    VerticalOptions="Start"
+                                    BackgroundColor="Transparent"/>
+                            </Frame>
+                            <!--<controls:BorderlessEntry
+                                    Text="{Binding SymptomDescriptionCell.TextDisplayValue}"
+                                    FontSize="17"
+                                    Margin="10,0,4,0"
+                                    Keyboard="Numeric" MaxLength="3"
+                                    ReturnType="Next" HorizontalTextAlignment="End"
+                                    IsEnabled="{Binding SymptomDescriptionCell.Enabled}"/>-->
+                            <Label
+                                    BackgroundColor="White" 
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Start"
+                                    TextColor="Black"
+                                    Text="{Binding SymptomDescriptionCell.PathogenName}"
+                                    Margin="10,-10,0,0"
+                                    Padding="4,0"
+                                    LineBreakMode="TailTruncation"/>
+                        </Grid>
+                    </StackLayout>
+                </Grid>
+
+            </StackLayout>
+
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

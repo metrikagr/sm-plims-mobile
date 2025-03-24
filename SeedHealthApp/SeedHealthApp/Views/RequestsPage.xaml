@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             xmlns:m="clr-namespace:SeedHealthApp.Models"
+             x:DataType="vm:RequestsPageViewModel"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.RequestsPage"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <!--<ToolbarItem Text="Log out" Command="{Binding LogoutCommand}"/>-->
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid RowDefinitions="*, auto" RowSpacing="0">
+            <StackLayout Padding="0">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="8,0,0,0" FontSize="16"/>
+                <ListView
+                    ItemsSource="{Binding RequestList}"  SelectedItem="{Binding SelectedRequest}"
+                    HasUnevenRows="True" SeparatorVisibility="None"
+                    IsPullToRefreshEnabled="True"
+                    IsRefreshing="{Binding IsRefreshing}"
+                    RefreshCommand="{Binding RefreshCommand}">
+                    <ListView.Behaviors>
+                        <prism:EventToCommandBehavior Command="{Binding GetEssaysCommand}" EventName="ItemTapped" />
+                    </ListView.Behaviors>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell x:DataType="m:Request">
+                                <Frame BackgroundColor="#F8F8F8" HasShadow="True" Margin="8">
+                                    <Grid RowSpacing="0" ColumnSpacing="4" RowDefinitions="auto" ColumnDefinitions="1*,1*" >
+                                        <Label Grid.Row="0" Grid.Column="0" Text="Request code :" FontSize="16" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding request_code}" FontSize="16" TextColor="#888888" />
+                                        <Label Grid.Row="1" Grid.Column="0" Text="Crop :" FontSize="16" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding crop_name}" FontSize="16" TextColor="#888888" />
+                                        <Label Grid.Row="3" Grid.Column="0" Text="Registered date :" FontSize="16" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding registered_date}" FontSize="16" TextColor="#888888" />
+                                        <Label Grid.Row="2" Grid.Column="0" Text="Seed distribution :" FontSize="16" TextColor="#888888" FontAttributes="Bold"/>
+                                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding distribution_name}" FontSize="16" TextColor="#888888" />
+                                    </Grid>
+                                </Frame>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+            <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="{Binding IsListEmpty}">
+                <Image Source="empty_box_64.png" HorizontalOptions="CenterAndExpand" />
+                <Label Text="Request list is empty" HorizontalOptions="CenterAndExpand"
+                                       TextColor="#777" FontSize="Large" FontAttributes="Bold"/>
+            </StackLayout>
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+            <StackLayout Grid.Row="1" Padding="0" IsVisible="{Binding IsOffline}">
+                <Label Style="{StaticResource Key=ConnectivityLabelStyle }"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

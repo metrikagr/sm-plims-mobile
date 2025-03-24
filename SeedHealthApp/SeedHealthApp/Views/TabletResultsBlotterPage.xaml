@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:vm="clr-namespace:SeedHealthApp.ViewModels"
+             xmlns:controls="clr-namespace:SeedHealthApp.Custom.Controls"
+             xmlns:cb="clr-namespace:SeedHealthApp.Custom.Behaviors"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="SeedHealthApp.Views.TabletResultsBlotterPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
+        <ResourceDictionary>
+            <xct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <!--<ToolbarItem Text="Save" Command="{Binding SaveEvaluationCommmand}"/>-->
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid RowDefinitions="*, auto">
+            <StackLayout Padding="8">
+                <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8"/>
+
+                <Grid ColumnDefinitions="80,*,80,80,*,80" RowDefinitions="54">
+                    <ImageButton Grid.Column="0" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousMaterialCommand}"/>
+                    <Label Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="18">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text=" Sample "/>
+                                <Span Text="{Binding SelectedMaterial.composite_sample_name}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <ImageButton Grid.Column="2" Source="next_48px" BackgroundColor="White" Command="{Binding NextMaterialCommand}"/>
+
+                    <ImageButton Grid.Column="3" Source="back_48px" BackgroundColor="White" Command="{Binding PreviousActivityCommand}"/>
+                    <Label Grid.Column="4" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="18">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text=" Repetition "/>
+                                <Span Text="{Binding SelectedActivity.activity_name}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <ImageButton Grid.Column="5" Source="next_48px" BackgroundColor="White" Command="{Binding NextActivityCommand}"/>
+                    <Button Grid.Column="6" Text="Save" HorizontalOptions="FillAndExpand" Command="{Binding SaveEvaluationCommmand}"
+                                        BackgroundColor="#00a65a" TextColor="White" CornerRadius="4"/>
+                </Grid>
+                <Frame>
+                    <StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding SeedsMaxCount, StringFormat='Tested seeds count : {0}'}" HorizontalOptions="FillAndExpand"
+                                   VerticalTextAlignment="Center" FontSize="17"/>
+
+                            <CheckBox IsChecked="{Binding MarkedToReprocess}" />
+                            <Label
+                                Text="Marked to reprocess"
+                                VerticalTextAlignment="Center"/>
+
+
+                            <CheckBox IsChecked="{Binding KeepPathogens}"/>
+                            <Label
+                                Text="Keep pathogens"
+                                VerticalTextAlignment="Center"
+                                Margin="0,0,8,0"/>
+                            <Button Text="Choose pathogens" HorizontalOptions="End"
+                                    Command="{Binding OpenPathogenPickerCommand}" 
+                                    TextColor="White" BackgroundColor="#337ab7" CornerRadius="4"/>
+                        </StackLayout>
+
+                        <CollectionView ItemsSource="{Binding CurrentResults}" SelectionMode="None" ItemsLayout="VerticalGrid, 1">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackLayout>
+                                        <Grid Margin="3,8,3,5" RowDefinitions="auto">
+                                            <!--#FF4081-->
+                                            <Frame HasShadow="False"
+                                                BorderColor="{Binding BackgroundColor}"
+                                                CornerRadius="{OnPlatform Android=4}"
+                                                Padding="{OnPlatform Android='5,0,5,0', iOS='8,0,8,0'}"
+                                                Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,0'}" />
+                                            <controls:BorderlessEntry
+                                                Text="{Binding SeedsCount}"
+                                                FontSize="17"
+                                                Margin="10,0,4,0"
+                                                Keyboard="Numeric"
+                                                MaxLength="3"
+                                                ReturnType="Next"
+                                                HorizontalTextAlignment="End"
+                                                SelectAllOnFocus="False">
+                                                <Entry.Behaviors>
+                                                    <xct:NumericValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                                                   MinimumValue="0"
+                                                                                   MaximumValue="{Binding SeedsMaxCount}"
+                                                    />
+                                                    <cb:SelectAllOnFocusBehavior />
+                                                </Entry.Behaviors>
+                                            </controls:BorderlessEntry>
+                                            <Label BackgroundColor="White" 
+                                                HorizontalOptions="Start"
+                                                TextColor="Black"
+                                                Text="{Binding PathogenName}"
+                                                Margin="10,-45,0,0"
+                                                Padding="4,0"
+                                                VerticalOptions="Center"
+                                                LineBreakMode="TailTruncation"/>
+                                        </Grid>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+                <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+
+            <!--<StackLayout Grid.Row="2">
+                <Button Text="debug info" Command="{Binding ShowDebugInfoCommand}"/>
+            </StackLayout>-->
+            <StackLayout Grid.Row="1" Padding="0" IsVisible="{Binding IsOffline}">
+                <Label Style="{StaticResource Key=ConnectivityLabelStyle }"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

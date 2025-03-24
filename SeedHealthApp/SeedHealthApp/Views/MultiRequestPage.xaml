@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:viewmodels="clr-namespace:SeedHealthApp.ViewModels"
+    xmlns:models="clr-namespace:SeedHealthApp.Models"
+    xmlns:controls="clr-namespace:SeedHealthApp.Custom.Controls"
+    x:DataType="viewmodels:MultiRequestPageViewModel"
+    xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="SeedHealthApp.Views.MultiRequestPage"
+    Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add plate" Command="{Binding AddPlateCommand}"/>
+        <ToolbarItem Text="Edit" Command="{Binding EditPlateCommand}"/>
+        <ToolbarItem Text="Change selection mode" Command="{Binding ChangeSelectionModeCommand}"/>
+        <!--<ToolbarItem Text="Debug info" Command="{Binding ShowDebugInfoCommand}" Order="Secondary"/>-->
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <StackLayout
+            Padding="8">
+            <Label Text="{Binding Username, StringFormat='You are now logged in as : {0}'}" Padding="0,0,0,8"/>
+
+            <Frame >
+                <StackLayout>
+                    <!--<ScrollView
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        Orientation="Vertical">-->
+                    <CollectionView
+                        ItemsSource="{Binding ElisaPathogenList}"
+                        SelectionMode="{Binding SelectionMode}"
+                        SelectedItem="{Binding SelectedElisaPathogen}"
+                        SelectedItems="{Binding SelectedElisaPathogenList}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate
+                                x:DataType="models:ElisaPathogen">
+                                <StackLayout
+                                    HeightRequest="180"
+                                    Orientation="Horizontal">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroupList>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal" />
+                                                <VisualState x:Name="Selected">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="LightSkyBlue" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateGroupList>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <Label
+                                        Text="{Binding PathogenName}"
+                                        WidthRequest="100"
+                                        VerticalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        FontAttributes="Bold"/>
+                                    <CollectionView
+                                        ItemsSource="{Binding PlateList}"
+                                        ItemsLayout="HorizontalList"
+                                        HorizontalOptions="FillAndExpand"
+                                        SelectionMode="Single"
+                                        SelectedItem="{Binding SelectedElisaPlate}"
+                                        SelectionChangedCommand="{Binding ElisaPlateSelectionChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MultiRequestPageViewModel}}}"
+                                        SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate
+                                                x:DataType="models:ElisaPlate">
+                                                <StackLayout
+                                                    WidthRequest="220">
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup Name="CommonStates">
+                                                            <VisualState Name="Normal" />
+                                                            <VisualState Name="Selected">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="Yellow" />
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+                                                    <Frame
+                                                        HasShadow="True"
+                                                        BorderColor="DarkGray"
+                                                        CornerRadius="5"
+                                                        Margin="8"
+                                                        HorizontalOptions="Center"
+                                                        VerticalOptions="CenterAndExpand"
+                                                        Padding="8">
+                                                        <Grid
+                                                            HorizontalOptions="Center"
+                                                            VerticalOptions="Center">
+                                                            <controls:SKRenderView
+                                                                WidthRequest="220"
+                                                                HeightRequest="130"
+                                                                HorizontalOptions="Center"
+                                                                VerticalOptions="Center"
+                                                                PlateCells="{Binding PlateCells}"
+                                                                >
+                                                            </controls:SKRenderView>
+                                                            <Label
+                                                                Text="{Binding PlateOrder}"
+                                                                FontAttributes="Bold"
+                                                                FontSize="Large"
+                                                                HorizontalOptions="CenterAndExpand"
+                                                                VerticalOptions="CenterAndExpand"
+                                                                TextColor="Black"/>
+                                                        </Grid>
+                                                    </Frame>
+                                                </StackLayout>
+                                                
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                        
+                                    
+                                    <!--<CarouselView
+                                        ItemsSource="{Binding PlateList}"
+                                        Loop="False"
+                                        BackgroundColor="Transparent"
+                                        HeightRequest="400"
+                                        HorizontalOptions="FillAndExpand">
+                                        <CarouselView.ItemsLayout>
+                                            <LinearItemsLayout Orientation="Horizontal" />
+                                        </CarouselView.ItemsLayout>
+                                        <CarouselView.ItemTemplate>
+                                            <DataTemplate
+                                                x:DataType="models:ElisaPlate">
+                                                <StackLayout
+                                                    HeightRequest="400"
+                                                    WidthRequest="200">
+                                                    <Frame
+                                                        HasShadow="True"
+                                                        BorderColor="DarkGray"
+                                                        CornerRadius="5"
+                                                        Margin="8"
+                                                        HorizontalOptions="Center"
+                                                        VerticalOptions="CenterAndExpand"
+                                                        Padding="8">
+                                                        <Grid>
+                                                            <Image Source="{Binding Thumbnail}"
+                                                               Aspect="AspectFit"
+                                                               VerticalOptions="FillAndExpand"
+                                                               HorizontalOptions="FillAndExpand" />
+                                                            <Label Text="{Binding PlateOrder}"
+                                                               FontAttributes="Bold"
+                                                               FontSize="Large"
+                                                               HorizontalOptions="Start"
+                                                               VerticalOptions="Start" />
+                                                        </Grid>
+                                                    </Frame>
+                                                </StackLayout>
+                                            </DataTemplate>
+                                        </CarouselView.ItemTemplate>
+                                    </CarouselView>-->
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <!--</ScrollView>-->
+                    
+                </StackLayout>
+            </Frame>
+
+        </StackLayout>
+        
+        <StackLayout VerticalOptions="FillAndExpand" IsVisible="{Binding IsBusy}" BackgroundColor="#AAFFFFFF">
+            <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand"/>
+        </StackLayout>
+    </Grid>
+</ContentPage>
